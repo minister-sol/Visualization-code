@@ -46,6 +46,7 @@ python server.py
 - int 为32位、long long 为64位、char 为有符号8位；超范围赋值拒绝，不模拟全部平台转换与溢出行为。
 - 分配采用元素类型和数量；realloc 支持整数、字符、指针和结构体数组并始终移动；保留原有成员值，新增元素未初始化，旧引用失效；零长度 realloc 暂不支持。
 - 尚不支持完整浮点环境（NaN/Inf、long double及浮点异常等）、完整类型兼容/存储期、完整字符串库、完整函数指针类型语义、通用字节内存、完整预处理、多文件或多语言输入。
+- 位域（包括匿名和零宽位域）、union、goto 和不带类型描述的裸字节分配会明确拒绝。
 - 完整初始化类型检查、复杂枚举和初始化组合等写法仍有限制。字符串字面量只读。
 - 复杂图仍可能有交叉线；临时返回值对象保留在对象图中，完整临时对象生命周期待完善。
 
@@ -54,13 +55,13 @@ python server.py
 ## 验证与覆盖证据
 
 ```powershell
-python -m unittest discover -s tests -v
-node tests/test_object_layout.cjs
-node tests/test_state_view.cjs
-python tests/compare_gcc.py
+python scripts/check.py          # Python 单元/HTTP + 两项 Node 测试
+python scripts/check.py --gcc    # 加跑 GCC 输出和退出码对照
 ```
 
-当前535项单元/HTTP测试通过，包含程序子用例和12组随机输入/变量改名的逐步读写核对。103段程序标准输出及退出码与 GCC 一致（最后一项命令需要 GCC）。覆盖顺序表、链表、栈、循环队列、堆、哈希、并查集、二叉搜索树、Trie、线段树、矩阵 BFS 和节点池 DFS。
+检查使用 Python 3.12 和 Node.js（CI 使用 Node 24）；pycparser 随仓库提供，无需额外安装 Python 第三方包或 npm 包。`--gcc` 需要 PATH 中有 GCC，不提供此参数时会明确显示跳过 GCC。HTTP 测试需要允许本机回环网络连接；失败会使检查返回非零状态。GitHub Actions 在推送和 PR 时执行包含 GCC 的检查；浏览器回归不包含在该检查中，前置条件与覆盖缺口见 [docs/COVERAGE.md](docs/COVERAGE.md)。
+
+2026-11-11 的一次独立验证运行了 536 项 Python 测试，其中 5 项 HTTP 测试因沙箱禁止本机连接而报错，其余通过；两项 Node 测试通过，103 段程序的输出和退出码与 GCC 一致。测试数量随代码变化，以实际运行结果为准。覆盖包括顺序表、链表、栈、循环队列、堆、哈希、并查集、二叉搜索树、Trie、线段树、矩阵 BFS 和节点池 DFS。
 
 浏览器已验证链表、节点池图、Trie展开/折叠、字符视图、偏移别名高亮、递归调用帧、错误回放和执行事件导航。检查脚本与截图位于本地 artifacts/，该目录不纳入版本控制。输出对照与有限语料不能证明任意 C 源码或全部中间语义正确。
 

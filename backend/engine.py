@@ -1933,7 +1933,14 @@ class Engine:
   code=re.sub('"(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|/\\*.*?\\*/|//[^\\n]*',lambda m:m.group() if m.group().startswith((chr(34),chr(39))) else ' '+ '\n'*m.group().count('\n'),code,flags=re.S)
   code=preprocess(code,CError)
   self.preprocessed_source=code
-  tree=c_parser.CParser().parse(code);self.funcs={n.decl.name:n for n in tree.ext if isinstance(n,c_ast.FuncDef)}
+  tree=c_parser.CParser().parse(code)
+  class RejectBitfields(c_ast.NodeVisitor):
+   def visit_Decl(v,n):
+    if n.bitsize is not None:
+     error=CError('暂不支持位域');coord=n.coord or n.bitsize.coord;error.line=coord.line if coord else None;raise error
+    v.generic_visit(n)
+  RejectBitfields().visit(tree)
+  self.funcs={n.decl.name:n for n in tree.ext if isinstance(n,c_ast.FuncDef)}
   if sum(isinstance(node,c_ast.FuncDef) for node in tree.ext)!=len(self.funcs):raise CError('重复函数定义')
   self.resolve_aliases(tree)
   self.normalize_integer_types(tree)
