@@ -18,6 +18,6 @@ class Handler(SimpleHTTPRequestHandler):
    size=int(self.headers.get('Content-Length',0))
    if size>100000:raise ValueError('请求过大')
    body=json.loads(self.rfile.read(size));result=trace(body['code'],body.get('stdin',''));self.send_json(result)
-  except Exception as e:self.send_json({'error':str(e),'status':'error'},400)
+  except Exception as e:self.send_json({'error':str(e),'status':'error','line':getattr(e,'line',None),'steps':getattr(e,'steps',[]),'output':getattr(e,'output',''),'preprocessed_source':getattr(e,'preprocessed_source','')},400)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--port',type=int,default=8000);a=p.parse_args();print('C Visualizer http://127.0.0.1:'+str(a.port));ThreadingHTTPServer(('127.0.0.1',a.port),Handler).serve_forever()

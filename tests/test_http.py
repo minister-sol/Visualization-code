@@ -42,6 +42,38 @@ class HTTPIntegrationTests(unittest.TestCase):
         self.assertEqual(result['output'], '13')
         self.assertTrue(result['steps'])
 
+    def test_runtime_error_preserves_replay(self):
+        code='int main(){\nint a[2]={3,4};\na[3]=7;\n}'
+        request=urllib.request.Request(self.base+'/api/trace',json.dumps({'code':code}).encode(),{'Content-Type':'application/json'})
+        with self.assertRaises(urllib.error.HTTPError) as failure:
+            urllib.request.urlopen(request)
+        result=json.load(failure.exception)
+        self.assertEqual(result['preprocessed_source'],code)
+        self.assertEqual(result['line'],3)
+        self.assertEqual(result['steps'][-1]['event'],'error')
+        self.assertEqual(result['steps'][-1]['variables']['a'],[3,4])
+        self.assertEqual(result['steps'][-1]['stack'],['main'])
+
+    def test_macro_expansion_available_with_original_lines(self):
+        code='#define DOUBLE(x) ((x)*2)\nint main(){int value=DOUBLE(7);printf("%d",value);}'
+        request=urllib.request.Request(self.base+'/api/trace',json.dumps({'code':code}).encode(),{'Content-Type':'application/json'})
+        with urllib.request.urlopen(request) as response:
+            result=json.load(response)
+        self.assertEqual(result['output'],'14')
+        self.assertIn('((7)*2)',result['preprocessed_source'].splitlines()[1])
+        self.assertNotIn('DOUBLE',result['preprocessed_source'])
+
+
+    def test_nonzero_program_exit_returns_a_completed_trace(self):
+        code='int main(){printf("done");exit(7);printf("unreachable");}'
+        request=urllib.request.Request(self.base+'/api/trace',json.dumps({'code':code}).encode(),{'Content-Type':'application/json'})
+        with urllib.request.urlopen(request) as response:
+            result=json.load(response)
+        self.assertEqual(result['output'],'done')
+        self.assertEqual(result['exit_code'],7)
+        self.assertEqual(result['status'],'completed')
+        self.assertEqual(result['steps'][-1]['termination'],'exit')
+
 
 if __name__ == '__main__':
     unittest.main()

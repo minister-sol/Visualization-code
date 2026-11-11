@@ -119,3 +119,25 @@ int main()
         printf("0");
     return 0;
 }''','基础','17\n')
+
+add('linked-reverse','自定义链表反转','''struct Cell { int value; struct Cell *following; };
+struct Cell *reverse(struct Cell *p) {
+    struct Cell *previous=0;
+    while(p!=0) {
+        struct Cell *saved=p->following;
+        p->following=previous;
+        previous=p;
+        p=saved;
+    }
+    return previous;
+}
+int main() {
+    struct Cell a; struct Cell b; struct Cell c;
+    a.value=1; b.value=2; c.value=3;
+    a.following=&b; b.following=&c; c.following=0;
+    struct Cell *head=reverse(&a);
+    while(head) {
+        printf("%d ",head->value);
+        head=head->following;
+    }
+}''','数据结构')
