@@ -1,0 +1,43 @@
+{
+  "name": "codelens-desktop",
+  "version": "1.0.0",
+  "description": "CodeLens 经典算法与数据结构",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "dist": "electron-builder --win nsis --x64",
+    "dist:mac": "electron-builder --mac --publish never"
+  },
+  "build": {
+    "appId": "org.codelens.visualization",
+    "productName": "CodeLens",
+    "files": [
+      "main.cjs",
+      "site/**/*"
+    ],
+    "directories": {
+      "output": "../artifacts/desktop-release"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false
+    },
+    "artifactName": "CodeLens-Setup-${version}-${arch}.${ext}",
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "artifactName": "CodeLens-${version}-${arch}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  }
+}

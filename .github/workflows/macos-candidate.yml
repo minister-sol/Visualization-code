@@ -1,0 +1,38 @@
+name: macOS candidate
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  dmg:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Stage the published site from the checked-out commit
+        run: |
+          mkdir -p desktop/site
+          git archive HEAD index.html assets | tar -x -C desktop/site
+      - run: npm ci
+        working-directory: desktop
+      - run: npm run dist:mac
+        working-directory: desktop
+      - name: Check mounted application and record checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd artifacts/desktop-release
+          dmg=(CodeLens-*-universal.dmg)
+          test "${#dmg[@]}" -eq 1
+          mount=$(mktemp -d)
+          hdiutil attach "${dmg[0]}" -readonly -nobrowse -mountpoint "$mount"
+          trap 'hdiutil detach "$mount"' EXIT
+          lipo -verify_arch arm64 x86_64 "$mount/CodeLens.app/Contents/MacOS/CodeLens"
+          shasum -a 256 "${dmg[0]}" > SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CodeLens-macOS-universal
+          path: |
+            artifacts/desktop-release/*-universal.dmg
+            artifacts/desktop-release/SHA256.txt
