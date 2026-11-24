@@ -1,0 +1,2 @@
+.dp-wrap{max-width:100%;overflow:auto}.dp-table{border-collapse:collapse;font:13px monospace}.dp-table td{border:1px solid #bacbdd;min-width:28px;text-align:center;padding:5px}.dp-table td.active{background:#ffe4a0;outline:2px solid #c78200}.graph-edge.chosen{stroke:#df8b00;stroke-width:4}.weight-label{font-size:12px;font-weight:bold;fill:#17395a;paint-order:stroke;stroke:white;stroke-width:3px;stroke-linejoin:round}
+body[data-theme="dark"] .dp-table td.active{color:#17263b}
