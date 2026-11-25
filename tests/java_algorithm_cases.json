@@ -1,0 +1,940 @@
+{
+  "array": [
+    {
+      "stdin": "3\n1 2 3\n2\n1 1 9\n2 0 0",
+      "args": [],
+      "output": "9 2 3 "
+    },
+    {
+      "stdin": "0\n\n2\n1 0 5\n2 0 0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "linked": [
+    {
+      "stdin": "3\n1 2 3\n3\n1 1 9\n2 0 0\n3 0 0",
+      "args": [],
+      "output": "3 2 9 "
+    },
+    {
+      "stdin": "0\n\n1\n1 0 5\n",
+      "args": [],
+      "output": "5 "
+    }
+  ],
+  "stack": [
+    {
+      "stdin": "5\n1 3\n1 1\n2 0\n1 2\n2 0",
+      "args": [],
+      "output": "3 "
+    },
+    {
+      "stdin": "2\n2 0\n1 4\n",
+      "args": [],
+      "output": "4 "
+    }
+  ],
+  "queue": [
+    {
+      "stdin": "3 5\n1 1\n1 2\n2 0\n1 3\n1 4",
+      "args": [],
+      "output": "2 3 4 "
+    },
+    {
+      "stdin": "2 6\n1 1\n1 2\n1 3\n2 0\n2 0\n2 0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "hashChain": [
+    {
+      "stdin": "capacity 4\ninsert 1\ninsert 5\nfind 5\ndelete 1",
+      "args": [],
+      "output": "1\r\n"
+    },
+    {
+      "stdin": "capacity 1\ninsert 5\ninsert 5\nfind 5\ndelete 5\nfind 5\n",
+      "args": [],
+      "output": "1\r\n0\r\n"
+    }
+  ],
+  "hashLinear": [
+    {
+      "stdin": "capacity 4\ninsert 1\ninsert 5\ndelete 1\nfind 5",
+      "args": [],
+      "output": "1\r\n"
+    },
+    {
+      "stdin": "capacity 1\ninsert 5\ninsert 5\ndelete 5\nfind 5\n",
+      "args": [],
+      "output": "0\r\n"
+    }
+  ],
+  "unionFind": [
+    {
+      "stdin": "vertices A B C\nunion A B\nfind A C\nunion B C\nfind A C",
+      "args": [],
+      "output": "0\r\n1\r\n"
+    },
+    {
+      "stdin": "vertices A\nfind A A\n",
+      "args": [],
+      "output": "1\r\n"
+    }
+  ],
+  "monoStack": [
+    {
+      "stdin": "5\n2 1 2 4 3",
+      "args": [],
+      "output": "4 2 4 _ _ "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "monoQueue": [
+    {
+      "stdin": "8\n1 3 -1 -3 5 3 6 7\n3",
+      "args": [],
+      "output": "3 3 5 5 6 7 "
+    },
+    {
+      "stdin": "1\n5\n1\n",
+      "args": [],
+      "output": "5 "
+    }
+  ],
+  "trie": [
+    {
+      "stdin": "insert cat\ninsert car\nsearch cat\nprefix ca",
+      "args": [],
+      "output": "1\r\n1\r\n"
+    },
+    {
+      "stdin": "search a\nprefix a\n",
+      "args": [],
+      "output": "0\r\n0\r\n"
+    }
+  ],
+  "bst": [
+    {
+      "stdin": "5\n1 5\n1 3\n1 7\n2 3\n3 5",
+      "args": [],
+      "output": "F1\r\n3 7 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "preorder": [
+    {
+      "stdin": "6\n1 2 3 4 null 5",
+      "args": [],
+      "output": "1 2 4 3 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "inorder": [
+    {
+      "stdin": "6\n1 2 3 4 null 5",
+      "args": [],
+      "output": "4 2 1 5 3 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "postorder": [
+    {
+      "stdin": "6\n1 2 3 4 null 5",
+      "args": [],
+      "output": "4 2 5 3 1 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "levelorder": [
+    {
+      "stdin": "6\n1 2 3 4 null 5",
+      "args": [],
+      "output": "1 2 3 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "heap": [
+    {
+      "stdin": "4\n1 3\n1 8\n1 5\n2 0",
+      "args": [],
+      "output": "5 3 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "heapSort": [
+    {
+      "stdin": "5\n5 2 4 2 1",
+      "args": [],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "segmentTree": [
+    {
+      "stdin": "1, 2, 3, 4\nsum 0 2\nset 1 5\nsum 1 3",
+      "args": [],
+      "output": "array 1 5 3 4\r\nresults 6 12\r\n"
+    },
+    {
+      "stdin": "1\nsum 0 0\n",
+      "args": [],
+      "output": "array 1\r\nresults 1\r\n"
+    }
+  ],
+  "fenwick": [
+    {
+      "stdin": "1, 2, 3, 4\nsum 2\nset 1 5\nsum 3",
+      "args": [],
+      "output": "array 1 5 3 4\r\nresults 6 13\r\n"
+    },
+    {
+      "stdin": "1\nsum 0\n",
+      "args": [],
+      "output": "array 1\r\nresults 1\r\n"
+    }
+  ],
+  "avl": [
+    {
+      "stdin": "3, 1, 2, 5, 4",
+      "args": [],
+      "output": "order 1 2 3 4 5\r\nheight 3\r\nroot 3\r\nnode 1 3 1 0 0\r\nnode 2 1 1 0 0\r\nnode 3 2 3 2 5\r\nnode 4 5 1 0 0\r\nnode 5 4 2 1 4\r\n"
+    },
+    {
+      "stdin": "\n",
+      "args": [],
+      "output": "order\r\nheight 0\r\nroot 0\r\n"
+    }
+  ],
+  "redBlack": [
+    {
+      "stdin": "7, 3, 9, 1, 5, 4",
+      "args": [],
+      "output": "order 1 3 4 5 7 9\r\nroot 7\r\nnode 1 7 2 3 black\r\nnode 2 3 4 5 red\r\nnode 3 9 0 0 black\r\nnode 4 1 0 0 black\r\nnode 5 5 6 0 black\r\nnode 6 4 0 0 red\r\n"
+    },
+    {
+      "stdin": "\n",
+      "args": [],
+      "output": "order\r\nroot 0\r\n"
+    }
+  ],
+  "bTree": [
+    {
+      "stdin": "1, 2, 3, 4, 5, 6",
+      "args": [],
+      "output": "order 1 2 3 4 5 6\r\nroot 2\r\nnode 1 keys 1 children\r\nnode 2 keys 2 4 children 1 3 4\r\nnode 3 keys 3 children\r\nnode 4 keys 5 6 children\r\n"
+    },
+    {
+      "stdin": "\n",
+      "args": [],
+      "output": "order\r\nroot 1\r\nnode 1 keys children\r\n"
+    }
+  ],
+  "lca": [
+    {
+      "stdin": "1, 2, 3, 4, 5\nquery 3 4",
+      "args": [],
+      "output": "result 1\r\nvalue 2\r\n"
+    },
+    {
+      "stdin": "1\nquery 0 0\n",
+      "args": [],
+      "output": "result 0\r\nvalue 1\r\n"
+    }
+  ],
+  "bubble": [
+    {
+      "stdin": "",
+      "args": [
+        "5",
+        "2",
+        "4",
+        "2",
+        "1"
+      ],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "selection": [
+    {
+      "stdin": "5\n5 2 4 2 1",
+      "args": [],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "insertion": [
+    {
+      "stdin": "5\n5 2 4 2 1",
+      "args": [],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "merge": [
+    {
+      "stdin": "5\n5 2 4 2 1",
+      "args": [],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "quick": [
+    {
+      "stdin": "5\n5 2 4 2 1",
+      "args": [],
+      "output": "1 2 2 4 5 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "linear": [
+    {
+      "stdin": "4\n3 1 3 2\n3",
+      "args": [],
+      "output": "0"
+    },
+    {
+      "stdin": "0\n5\n",
+      "args": [],
+      "output": "-1"
+    }
+  ],
+  "binary": [
+    {
+      "stdin": "4\n1 2 2 4\n2",
+      "args": [],
+      "output": "1"
+    },
+    {
+      "stdin": "0\n5\n",
+      "args": [],
+      "output": "-1"
+    }
+  ],
+  "quickSelect": [
+    {
+      "stdin": "6 2\n3 2 1 5 6 4",
+      "args": [],
+      "output": "5\r\n"
+    },
+    {
+      "stdin": "1 1\n5\n",
+      "args": [],
+      "output": "5\r\n"
+    }
+  ],
+  "countSort": [
+    {
+      "stdin": "4\n2 -1 2 0",
+      "args": [],
+      "output": "-1 0 2 2 \r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "radix": [
+    {
+      "stdin": "8\n170 45 75 90 802 24 2 66",
+      "args": [],
+      "output": "2 24 45 66 75 90 170 802 \r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "bucket": [
+    {
+      "stdin": "6\n42 5 33 91 20 42",
+      "args": [],
+      "output": "5 20 33 42 42 91 \r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "shell": [
+    {
+      "stdin": "5\n8 -3 5 1 5",
+      "args": [],
+      "output": "-3 1 5 5 8 \r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "graph": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B\nedge A C\nedge B D",
+      "args": [],
+      "output": "A: B C\r\nB: D\r\nC:\r\nD:\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\n",
+      "args": [],
+      "output": "A:\r\n"
+    }
+  ],
+  "graphDFS": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B\nedge A C\nedge B D",
+      "args": [],
+      "output": "A B D C \r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "A \r\n"
+    }
+  ],
+  "graphBFS": [
+    {
+      "stdin": "vertices A B C D\nmode undirected\nstart A\nedge A B\nedge A C\nedge B D",
+      "args": [],
+      "output": "A B C D \r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "A \r\n"
+    }
+  ],
+  "graphShortest": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B\nedge A C\nedge B D",
+      "args": [],
+      "output": "A 0 -\r\nB 1 A\r\nC 1 A\r\nD 2 B\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "A 0 -\r\n"
+    }
+  ],
+  "graphTopo": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nedge A B\nedge A C\nedge B D",
+      "args": [],
+      "output": "A B C D \r\ncycle 0\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\n",
+      "args": [],
+      "output": "A \r\ncycle 0\r\n"
+    }
+  ],
+  "dijkstra": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B 2\nedge A C 5\nedge B C 1\nedge C D 3",
+      "args": [],
+      "output": "A 0 -\r\nB 2 A\r\nC 3 B\r\nD 6 C\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "A 0 -\r\n"
+    }
+  ],
+  "prim": [
+    {
+      "stdin": "vertices A B C D\nmode undirected\nstart A\nedge A B 2\nedge A C 5\nedge B C 1\nedge C D 3",
+      "args": [],
+      "output": "edge A B 2\r\nedge B C 1\r\nedge C D 3\r\ntotal 6\r\nconnected 1\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode undirected\nstart A\n",
+      "args": [],
+      "output": "total 0\r\nconnected 1\r\n"
+    }
+  ],
+  "kruskal": [
+    {
+      "stdin": "vertices A B C D\nmode undirected\nedge A B 2\nedge A C 5\nedge B C 1\nedge C D 3",
+      "args": [],
+      "output": "edge B C 1\r\nedge A B 2\r\nedge C D 3\r\ntotal 6\r\nconnected 1\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode undirected\n",
+      "args": [],
+      "output": "total 0\r\nconnected 1\r\n"
+    }
+  ],
+  "bellmanFord": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B 2\nedge B C -4\nedge A C 4",
+      "args": [],
+      "output": "A 0\r\nB 2\r\nC -2\r\nD -1000000\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "A 0\r\n"
+    }
+  ],
+  "floydWarshall": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nedge A B 2\nedge B C -4\nedge A C 4",
+      "args": [],
+      "output": "0 2 -2 -1000000\r\n-1000000 0 -4 -1000000\r\n-1000000 -1000000 0 -1000000\r\n-1000000 -1000000 -1000000 0\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\n",
+      "args": [],
+      "output": "0\r\n"
+    }
+  ],
+  "bipartite": [
+    {
+      "stdin": "vertices A B C D\nmode undirected\nedge A C\nedge A D\nedge B C",
+      "args": [],
+      "output": "valid 1\r\nmatch C B\r\nmatch D A\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode undirected\n",
+      "args": [],
+      "output": "valid 1\r\n"
+    }
+  ],
+  "scc": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nedge A B\nedge B A\nedge B C\nedge C D",
+      "args": [],
+      "output": "comp A B\r\ncomp C\r\ncomp D\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\n",
+      "args": [],
+      "output": "comp A\r\n"
+    }
+  ],
+  "cutBridge": [
+    {
+      "stdin": "vertices A B C D\nmode undirected\nedge A B\nedge B C\nedge C A\nedge C D",
+      "args": [],
+      "output": "cuts C\r\nbridges C-D\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode undirected\n",
+      "args": [],
+      "output": "cuts\r\nbridges\r\n"
+    }
+  ],
+  "maze": [
+    {
+      "stdin": "grid\n000\n110\n000\nstart 0 0\nend 2 2",
+      "args": [],
+      "output": "path 0,0 0,1 0,2 1,2 2,2\r\n"
+    },
+    {
+      "stdin": "grid\n0\nstart 0 0\nend 0 0\n",
+      "args": [],
+      "output": "path 0,0\r\n"
+    }
+  ],
+  "maxFlow": [
+    {
+      "stdin": "vertices S A B T\nmode directed\nsource S\nsink T\nedge S A 3\nedge S B 2\nedge A B 1\nedge A T 2\nedge B T 3",
+      "args": [],
+      "output": "flow 5\r\nsourceSide S\r\ncut 5\r\n"
+    },
+    {
+      "stdin": "vertices S T\nmode directed\nsource S\nsink T\n",
+      "args": [],
+      "output": "flow 0\r\nsourceSide S\r\ncut 0\r\n"
+    }
+  ],
+  "zeroOneBFS": [
+    {
+      "stdin": "vertices A B C D\nmode directed\nstart A\nedge A B 1\nedge A C 0\nedge C B 0\nedge B D 1",
+      "args": [],
+      "output": "dist A 0 -\r\ndist B 0 C\r\ndist C 0 A\r\ndist D 1 B\r\n"
+    },
+    {
+      "stdin": "vertices A\nmode directed\nstart A\n",
+      "args": [],
+      "output": "dist A 0 -\r\n"
+    }
+  ],
+  "activitySelection": [
+    {
+      "stdin": "4\n1 3\n2 5\n3 4\n4 6",
+      "args": [],
+      "output": "0 2 3 "
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": ""
+    }
+  ],
+  "intervalGrouping": [
+    {
+      "stdin": "interval 1 4\ninterval 2 5\ninterval 4 6",
+      "args": [],
+      "output": "resources 2\r\nR0: 0 2\r\nR1: 1\r\n"
+    },
+    {
+      "stdin": "interval 0 1\n",
+      "args": [],
+      "output": "resources 1\r\nR0: 0\r\n"
+    }
+  ],
+  "fractionalKnapsack": [
+    {
+      "stdin": "capacity 5\nitem 3 4\nitem 4 7\nitem 2 3",
+      "args": [],
+      "output": "choice 1 4\r\nchoice 2 1\r\nvalue 17/2\r\nremaining 0\r\n"
+    },
+    {
+      "stdin": "capacity 0\n",
+      "args": [],
+      "output": "value 0/1\r\nremaining 0\r\n"
+    }
+  ],
+  "twoPointer": [
+    {
+      "stdin": "4\n1 2 3 4\n5",
+      "args": [],
+      "output": "0 3"
+    },
+    {
+      "stdin": "0\n0\n",
+      "args": [],
+      "output": "-1"
+    }
+  ],
+  "window": [
+    {
+      "stdin": "4\n1 3 2 5\n2",
+      "args": [],
+      "output": "7"
+    },
+    {
+      "stdin": "1\n5\n1\n",
+      "args": [],
+      "output": "5"
+    }
+  ],
+  "prefix": [
+    {
+      "stdin": "4\n1 2 3 4\n1\n3",
+      "args": [],
+      "output": "9"
+    },
+    {
+      "stdin": "1\n5\n0\n0\n",
+      "args": [],
+      "output": "5"
+    }
+  ],
+  "knapsack": [
+    {
+      "stdin": "capacity 5\nitem 2 3\nitem 3 4\nitem 4 5",
+      "args": [],
+      "output": "result 7\r\n"
+    },
+    {
+      "stdin": "capacity 0\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "completeKnapsack": [
+    {
+      "stdin": "capacity 7\nitem 2 3\nitem 3 4",
+      "args": [],
+      "output": "result 10\r\n"
+    },
+    {
+      "stdin": "capacity 0\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "coinChange": [
+    {
+      "stdin": "amount 6\ncoin 1\ncoin 3\ncoin 4",
+      "args": [],
+      "output": "result 2\r\n"
+    },
+    {
+      "stdin": "amount 0\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "matrixChain": [
+    {
+      "stdin": "10, 20, 30, 40",
+      "args": [],
+      "output": "cost 18000\r\norder ((A1×A2)×A3)\r\n"
+    },
+    {
+      "stdin": "",
+      "args": [],
+      "output": "cost 0\r\norder \r\n"
+    }
+  ],
+  "lcs": [
+    {
+      "stdin": "text ABCBDAB\ntext BDCABA",
+      "args": [],
+      "output": "result 4\r\nsequence BCBA\r\n"
+    },
+    {
+      "stdin": "text\ntext\n",
+      "args": [],
+      "output": "result 0\r\nsequence \r\n"
+    }
+  ],
+  "lis": [
+    {
+      "stdin": "3, 1, 2, 5, 4",
+      "args": [],
+      "output": "result 3\r\nsequence 1, 2, 5\r\n"
+    },
+    {
+      "stdin": "",
+      "args": [],
+      "output": "result 0\r\nsequence \r\n"
+    }
+  ],
+  "editDistance": [
+    {
+      "stdin": "text kitten\ntext sitting",
+      "args": [],
+      "output": "result 3\r\n"
+    },
+    {
+      "stdin": "text\ntext\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "gcd": [
+    {
+      "stdin": "48 18",
+      "args": [],
+      "output": "result 6\r\n"
+    },
+    {
+      "stdin": "0 0\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "sieve": [
+    {
+      "stdin": "30",
+      "args": [],
+      "output": "primes 2 3 5 7 11 13 17 19 23 29\r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "primes\r\n"
+    }
+  ],
+  "extGcd": [
+    {
+      "stdin": "30 18",
+      "args": [],
+      "output": "gcd 6\r\nx -1\r\ny 2\r\n"
+    },
+    {
+      "stdin": "0 0\n",
+      "args": [],
+      "output": "gcd 0\r\nx 1\r\ny 0\r\n"
+    }
+  ],
+  "fastPower": [
+    {
+      "stdin": "2 10 1000",
+      "args": [],
+      "output": "result 24\r\n"
+    },
+    {
+      "stdin": "0 0 1\n",
+      "args": [],
+      "output": "result 0\r\n"
+    }
+  ],
+  "permutations": [
+    {
+      "stdin": "1, 2, 2",
+      "args": [],
+      "output": "perms 3\r\nperm 1 2 2\r\nperm 2 1 2\r\nperm 2 2 1\r\n"
+    },
+    {
+      "stdin": "",
+      "args": [],
+      "output": "perms 1\r\nperm\r\n"
+    }
+  ],
+  "queens": [
+    {
+      "stdin": "4",
+      "args": [],
+      "output": "solutions 2\r\nqueen 1 3 0 2\r\nqueen 2 0 3 1\r\n"
+    },
+    {
+      "stdin": "0\n",
+      "args": [],
+      "output": "solutions 1\r\nqueen\r\n"
+    }
+  ],
+  "kmp": [
+    {
+      "stdin": "ABABABA\nABA",
+      "args": [],
+      "output": "0 2 4 \r\n"
+    },
+    {
+      "stdin": "\nA\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "huffman": [
+    {
+      "stdin": "aaabbc",
+      "args": [],
+      "output": "encoded 0 0 0 11 11 10\r\ncode 97 0\r\ncode 98 11\r\ncode 99 10\r\n"
+    },
+    {
+      "stdin": "",
+      "args": [],
+      "output": "encoded\r\n"
+    }
+  ],
+  "palindrome": [
+    {
+      "stdin": "babad",
+      "args": [],
+      "output": "bab\r\n"
+    },
+    {
+      "stdin": "a",
+      "args": [],
+      "output": "a\r\n"
+    }
+  ],
+  "stringCompare": [
+    {
+      "stdin": "ABABABA\nABA",
+      "args": [],
+      "output": "0 2 4 \r\n0 2 4 \r\n11\r\n7\r\n"
+    },
+    {
+      "stdin": "\nA\n",
+      "args": [],
+      "output": "\r\n\r\n0\r\n0\r\n"
+    }
+  ],
+  "zFunction": [
+    {
+      "stdin": "aabcaabxaaaz",
+      "args": [],
+      "output": "0 1 0 0 3 1 0 0 2 2 1 0 \r\n"
+    },
+    {
+      "stdin": "a",
+      "args": [],
+      "output": "0 \r\n"
+    }
+  ],
+  "rabinKarp": [
+    {
+      "stdin": "ababa\naba",
+      "args": [],
+      "output": "0 2 \r\n"
+    },
+    {
+      "stdin": "\nA\n",
+      "args": [],
+      "output": "\r\n"
+    }
+  ],
+  "ahoCorasick": [
+    {
+      "stdin": "",
+      "args": [
+        "ushers",
+        "he",
+        "she",
+        "hers"
+      ],
+      "output": "1:1 0:2 2:2 "
+    },
+    {
+      "stdin": "",
+      "args": [
+        "a",
+        "a"
+      ],
+      "output": "0:0 "
+    }
+  ]
+}

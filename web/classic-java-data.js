@@ -500,8 +500,7 @@
     "        }",
     "        System.out.println(dp[amount] >= INF ? \"result unreachable\" : \"result \" + dp[amount]); // @result",
     "    }",
-    "}",
-    ""
+    "}"
   ],
   "completeKnapsack": [
     "import java.util.*;",
@@ -524,8 +523,7 @@
     "        }",
     "        System.out.println(\"result \" + dp[cap]); // @result",
     "    }",
-    "}",
-    ""
+    "}"
   ],
   "countSort": [
     "import java.util.*;",
@@ -794,8 +792,7 @@
     "        System.out.println(\"value \" + num + \"/\" + den); // @remaining",
     "        System.out.println(\"remaining \" + rem); // @result",
     "    }",
-    "}",
-    ""
+    "}"
   ],
   "gcd": [
     "import java.util.*;",
@@ -1329,8 +1326,7 @@
     "        }",
     "        System.out.println(\"result \" + dp[cap]); // @result",
     "    }",
-    "}",
-    ""
+    "}"
   ],
   "kruskal": [
     "import java.io.*;",

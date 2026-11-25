@@ -47,7 +47,7 @@ try {
     function select(control, name) {
       id(control).value = name;
       id(control).dispatchEvent(new Event('change'));
-      assert(id(control).value === name && !id('error').textContent, name + ' could not be selected');
+      assert(id(control).value === name && !id('error').textContent, name + ' could not be selected: ' + id('error').textContent);
     }
     const names = Object.keys(CLibrary.examples);
     assert(names.length === 66, '66 library functions');
@@ -64,6 +64,14 @@ try {
     }
     for (const entry of ClassicCatalog.entries.filter(entry => !names.includes(entry.id))) {
       select('topic', entry.id);
+      select('codeLang', 'java');
+      assert(id('codeLanguage').textContent.includes('Java'), entry.id + ' Java selection');
+      assert(id('code').textContent.includes('class Main'), entry.id + ' Java program');
+      for (let step = 0; step <= Number(id('timeline').max); step++) {
+        if (id('code').querySelector('.line.active')) break;
+        id('next').click();
+      }
+      assert(id('code').querySelector('.line.active'), entry.id + ' Java step mapping');
       id('next').click();
       assert(!id('state').querySelector('.library-guide'), entry.id + ' algorithm state');
     }
