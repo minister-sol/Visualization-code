@@ -38,9 +38,11 @@ be4d63cfa1ccff55074c6b5ba959a6ba4ca26dc6f4c8e00c03e286ed1b36155a  CodeLens-Setup
    gpg --import CodeLens-release-key.asc
    ```
 
-2. 校验清单签名（Linux / macOS，Windows 用 GnuPG 同样适用）：
+2. 校验清单签名：Release 上的 `SHA256SUMS-1.1.0.txt` 与仓库里的 [release/SHA256SUMS-1.1.0.txt.asc](release/SHA256SUMS-1.1.0.txt.asc) 配套使用（Linux / macOS，Windows 用 GnuPG 同样适用）：
 
    ```sh
+   curl -LO https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/SHA256SUMS-1.1.0.txt
+   curl -LO https://raw.githubusercontent.com/minister-sol/Visualization-code/codex/c-standard-library/release/SHA256SUMS-1.1.0.txt.asc
    gpg --verify SHA256SUMS-1.1.0.txt.asc SHA256SUMS-1.1.0.txt
    ```
 
