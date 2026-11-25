@@ -1,6 +1,13 @@
 name: Windows candidate
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/c-standard-library]
+    paths:
+      - .github/workflows/windows-candidate.yml
+      - desktop/**
+      - web/**
 
 permissions:
   contents: read
