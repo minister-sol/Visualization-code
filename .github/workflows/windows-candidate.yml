@@ -1,6 +1,15 @@
 name: Windows candidate
 
-# Windows installer build with an optional SignPath step.
+# Builds the Windows NSIS installer on a GitHub-hosted runner, records its
+# signature state and SHA-256, and optionally submits it to SignPath for
+# Authenticode signing.
+#
+# The sign job stays skipped until the repository has these values:
+#   vars.SIGNPATH_ORGANIZATION_ID
+#   vars.SIGNPATH_PROJECT_SLUG
+#   vars.SIGNPATH_SIGNING_POLICY_SLUG
+#   vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG   (optional, defaults to SignPath default)
+#   secrets.SIGNPATH_API_TOKEN
 
 on:
   workflow_dispatch:
@@ -22,6 +31,8 @@ jobs:
       # runner's cp1252 console fails with "charmap codec can't encode".
       PYTHONUTF8: '1'
       PYTHONIOENCODING: 'utf-8'
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,36 +70,34 @@ jobs:
           "sha256=$hash"
           "$hash  $($exe.Name)" | Set-Content -LiteralPath 'artifacts/desktop-release/SHA256.txt' -Encoding utf8NoBOM
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload the unsigned artifact
+        id: upload
+        uses: actions/upload-artifact@v4
         with:
           name: CodeLens-Windows-unsigned
           path: |
             artifacts/desktop-release/CodeLens-Setup-*.exe
             artifacts/desktop-release/SHA256.txt
 
-  # Requires SignPath Foundation approval and four repository values:
-  #   vars.SIGNPATH_ORGANIZATION_ID, vars.SIGNPATH_PROJECT_SLUG,
-  #   vars.SIGNPATH_SIGNING_POLICY_SLUG, vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG
-  #   secrets.SIGNPATH_API_TOKEN
-  # Skipped automatically while SIGNPATH_PROJECT_SLUG is unset.
   sign:
     needs: build
     if: ${{ vars.SIGNPATH_PROJECT_SLUG != '' }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: CodeLens-Windows-unsigned
-          path: unsigned
-
       - name: Submit the installer to SignPath
-        uses: signpath/github-action-submit-signing-request@v1
+        id: signpath
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
           project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
           signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
           artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
+          github-artifact-id: ${{ needs.build.outputs.artifact_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           wait-for-completion: true
           output-artifact-directory: signed
 
@@ -100,9 +109,13 @@ jobs:
           $sig = Get-AuthenticodeSignature -LiteralPath $exe.FullName
           "signature=$($sig.Status) signer=$($sig.SignerCertificate.Subject)"
           if ($sig.Status -ne 'Valid') { throw "signature is $($sig.Status)" }
-          (Get-FileHash -LiteralPath $exe.FullName -Algorithm SHA256).Hash
+          $hash = (Get-FileHash -LiteralPath $exe.FullName -Algorithm SHA256).Hash
+          "sha256=$hash"
+          "$hash  $($exe.Name)" | Set-Content -LiteralPath 'signed/SHA256.txt' -Encoding utf8NoBOM
 
       - uses: actions/upload-artifact@v4
         with:
           name: CodeLens-Windows-signed
-          path: signed/**/*.exe
+          path: |
+            signed/**/*.exe
+            signed/SHA256.txt
