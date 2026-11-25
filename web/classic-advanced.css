@@ -1,0 +1,28 @@
+.dp-wrap{max-width:100%;overflow:auto}.dp-table{border-collapse:collapse;font:13px monospace}.dp-table td{border:1px solid #bacbdd;min-width:28px;text-align:center;padding:5px}.dp-table td.active{background:#ffe4a0;outline:2px solid #c78200}.graph-edge.chosen{stroke:#df8b00;stroke-width:4}.weight-label{font-size:12px;font-weight:bold;fill:#17395a;paint-order:stroke;stroke:white;stroke-width:3px;stroke-linejoin:round}
+body[data-theme="dark"] .dp-table td.active{color:#17263b}
+
+.topic-trigger { display:none }
+.topic-dialog { width:min(92vw,28rem); max-height:74vh; padding:16px; border:1px solid #bccbd9; border-radius:14px; color:inherit; background:white }
+body[data-theme="dark"] .topic-dialog { background:#203449; color:#e6edf5 }
+.topic-dialog::backdrop { background:#101f3399 }
+.topic-dialog[open] { display:flex; flex-direction:column; gap:8px }
+.topic-dialog > button { align-self:flex-end }
+.topic-dialog > div { overflow:auto; overscroll-behavior:contain }
+.topic-dialog h3 { margin:16px 0 6px; font-size:.9rem }
+.topic-dialog div button { display:block; text-align:left; width:100%; min-height:44px; margin-bottom:4px }
+.topic-dialog button[aria-pressed="true"] { background:#1465b4; color:white }
+@media(max-width:700px) {
+  header { display:grid; grid-template-columns:minmax(0,1fr) auto; padding:12px; gap:8px }
+  main { padding:16px 12px }
+  .setup,.panel { padding:14px; min-width:0 }
+  .setup { grid-template-columns:minmax(0,1fr) }
+  .setup > *, .setup select { max-width:100%; min-width:0 }
+  .topic-enhanced { display:none }
+  .setup .topic-trigger { display:block; justify-self:stretch; text-align:left; min-height:44px }
+  .hero p { line-height:1.6 }
+  .panel pre,.state { max-width:100%; overflow:auto }
+  .playback { position:static; border-radius:12px; margin-top:14px; max-height:none }
+  body { padding-bottom:env(safe-area-inset-bottom) }
+  .code-controls,.fs-controls,.workspace-switch { gap:6px }
+  .code-controls button,.workspace-switch button,header button { min-height:44px }
+}
