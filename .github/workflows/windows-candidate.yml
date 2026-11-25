@@ -69,15 +69,24 @@ jobs:
           $hash = (Get-FileHash -LiteralPath $exe.FullName -Algorithm SHA256).Hash
           "sha256=$hash"
           "$hash  $($exe.Name)" | Set-Content -LiteralPath 'artifacts/desktop-release/SHA256.txt' -Encoding utf8NoBOM
+          # Keep the summary readable for whoever approves the SignPath request.
+          $summary = $env:GITHUB_STEP_SUMMARY
+          "### Windows candidate" | Add-Content -LiteralPath $summary
+          "" | Add-Content -LiteralPath $summary
+          "- file: $($exe.Name)" | Add-Content -LiteralPath $summary
+          "- bytes: $($exe.Length)" | Add-Content -LiteralPath $summary
+          "- fileVersion / productVersion: $($version.FileVersion) / $($version.ProductVersion)" | Add-Content -LiteralPath $summary
+          "- signature: $($sig.Status)" | Add-Content -LiteralPath $summary
+          "- sha256: $hash" | Add-Content -LiteralPath $summary
 
       - name: Upload the unsigned artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
+          # SignPath signs a ZIP whose root must contain only the installer;
+          # the checksum stays in the job summary instead of the archive.
           name: CodeLens-Windows-unsigned
-          path: |
-            artifacts/desktop-release/CodeLens-Setup-*.exe
-            artifacts/desktop-release/SHA256.txt
+          path: artifacts/desktop-release/CodeLens-Setup-*.exe
 
   sign:
     needs: build
