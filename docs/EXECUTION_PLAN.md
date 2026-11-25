@@ -3254,3 +3254,4 @@ Codex 认领算法区 Java 源码交付、离线数据一致性与编译验证�
 - 新增 `scripts/sign-release.ps1`、`scripts/sign-release.sh`：先逐个复算清单哈希（不一致即失败），再出 `.asc` 并自校验；本机已跑通 3/3 文件。
 - README 增加「用 GPG 校验下载」与「Code signing policy」两节（含 SignPath 要求的署名、团队角色、隐私声明）。
 - 未做：deb/rpm 包内嵌入签名（会改变字节与 SHA-256，需与清单、Release 资产同步重出）；Windows Authenticode 证书待申请。
+2026-11-25 豆包补：账号问题定位与凭据切换。API `403 suspended` 来自本机缓存凭据所属的旧账号 zhongjing0412（主页 404），仓库所有者 minister-sol 正常（主页 200、匿名下载正常，push 走协作者权限所以一直可用）。已写入 minister-sol 的细粒度 token（Contents / Workflows 读写，All repositories），`/user` 回读 `login=minister-sol`，`git credential fill` 用户名一致，push 成功。仓库 `user.email` 改为 `359524899+minister-sol@users.noreply.github.com`，新提交作者归属正确（历史提交不改）。Release 新增 `SHA256SUMS-1.1.0.txt.asc`（id 792036439，887 字节）并在说明中补 GPG 校验步骤；README 校验命令改为直接从 Release 取 `.asc`。

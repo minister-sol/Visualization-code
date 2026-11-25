@@ -58,7 +58,9 @@
 
 - 下载入口：`https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/<文件名>`；README（发布分支与默认分支）均已加「下载安装包（1.1.0）」表格与三条 SHA-256。
 - 公网下载核验（匿名、无凭据，在云主机 Ubuntu 上整包下载并比对）：三个安装包大小与本地一致，SHA-256 全部匹配（逐条 `sha256sum` 比对）。Windows 侧因网络重置只能慢速续传（约 19 KB/s），改用云主机完成整包核验。
-- 已知限制：GitHub 在国内网络下直链下载速度不稳定；三个包均未代码签名。Release 校验文件为 Windows 生成的 CRLF 版，`sha256sum -c` 在 Linux 上不可直接使用，本地已生成 LF 版但因账号 API 受限（`403 Sorry. Your account was suspended`）暂未替换资产。
+- 已知限制：GitHub 在国内网络下直链下载速度不稳定；三个包均未代码签名。Release 校验文件为 Windows 生成的 CRLF 版，`sha256sum -c` 在 Linux 上不能直接用，README 给了一行转换命令。
+- 账号与凭据：此前 API 报 `403 Sorry. Your account was suspended`，查明是本机 git 凭据所属的旧账号 `zhongjing0412`（其主页已 404）被停用，仓库所有者 `minister-sol` 正常。已换用 minister-sol 的细粒度 token（Contents / Workflows 读写），API 恢复 200，push 正常。
+- 后续补齐：Release 新增资产 `SHA256SUMS-1.1.0.txt.asc`（887 字节，id 792036439），并在 Release 说明中追加 GPG 校验步骤；提交作者改用 `359524899+minister-sol@users.noreply.github.com`。
 
 ## 未覆盖
 
