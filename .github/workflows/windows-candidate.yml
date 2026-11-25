@@ -1,5 +1,7 @@
 name: Windows candidate
 
+# Windows installer build with an optional SignPath step.
+
 on:
   workflow_dispatch:
   push:
