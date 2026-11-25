@@ -3247,3 +3247,10 @@ Codex 认领算法区 Java 源码交付、离线数据一致性与编译验证�
 - 遗留问题：Release 上的 `SHA256SUMS-1.1.0.txt` 为 CRLF + 含目录前缀，Linux 上直接 `sha256sum -c` 会报找不到文件；本地已改写为 LF + 纯文件名（296 字节），但 GitHub REST API 当前返回 `403 Sorry. Your account was suspended`，删除/补传资产未能完成。git push 仍可用（`push --dry-run` 显示 up-to-date），仓库与 Release 匿名访问正常。已改为在 README 内联三条 SHA-256，避免依赖该资产。
 - 未覆盖：Windows 干净机、CentOS 实机安装、代码签名（Windows SmartScreen / Linux GPG）；默认分支 Pages 站点仍为旧内容，未同步。
 - 续做位置：GitHub 账号恢复 API 权限后，用 LF 版校验文件替换 Release 资产 790664265；如需页面同步，另做默认分支站点迁移。
+### 2026-11-25 豆包补：开源许可、签名政策与 GPG 校验（Python 免费路径先行）
+- `LICENSE` 补为 MIT（2026 zhongjing），满足 SignPath Foundation 的 OSI 许可证要求；此前仓库无任何许可证文件。
+- 生成项目发布密钥：RSA 4096、仅签名、3 年有效，指纹 `761FC D89C AA66 6C7C 133C 3064 96AB F23B D88A 747B`（连写 `761FCD89CAA66C7C133C306496ABF23BD88A747B`）。私钥在本机 GnuPG（winget 装 GnuPG 2.5.24），暂未设口令，风险与改口令步骤写入 `docs/RELEASE_SIGNING.md`。
+- 已对 Release 上现存的 `SHA256SUMS-1.1.0.txt`（326 字节，CRLF，sha256 `0333293D…23114D`）做分离签名，`release/SHA256SUMS-1.1.0.txt.asc` 覆盖原字节；`gpg --verify` 回读 `Good signature`。公钥 `release/CodeLens-release-key.asc` 随仓库分发，指纹写进 README。
+- 新增 `scripts/sign-release.ps1`、`scripts/sign-release.sh`：先逐个复算清单哈希（不一致即失败），再出 `.asc` 并自校验；本机已跑通 3/3 文件。
+- README 增加「用 GPG 校验下载」与「Code signing policy」两节（含 SignPath 要求的署名、团队角色、隐私声明）。
+- 未做：deb/rpm 包内嵌入签名（会改变字节与 SHA-256，需与清单、Release 资产同步重出）；Windows Authenticode 证书待申请。

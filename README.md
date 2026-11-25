@@ -24,6 +24,48 @@ be4d63cfa1ccff55074c6b5ba959a6ba4ca26dc6f4c8e00c03e286ed1b36155a  CodeLens-Setup
 
 安装包暂未代码签名，Windows 首次运行可能提示“未知发布者”。构建、验证与上线记录见 [docs/RELEASE_1.1.0_20261125.md](docs/RELEASE_1.1.0_20261125.md)。
 
+### 用 GPG 校验下载
+
+发布密钥指纹：
+
+```
+761F CD89 CAA6 6C7C 133C  3064 96AB F23B D88A 747B
+```
+
+1. 导入公钥（[release/CodeLens-release-key.asc](release/CodeLens-release-key.asc)）：
+
+   ```sh
+   gpg --import CodeLens-release-key.asc
+   ```
+
+2. 校验清单签名（Linux / macOS，Windows 用 GnuPG 同样适用）：
+
+   ```sh
+   gpg --verify SHA256SUMS-1.1.0.txt.asc SHA256SUMS-1.1.0.txt
+   ```
+
+   应输出 `Good signature from "CodeLens Release (zhongjing)"`。
+
+3. 比对安装包：
+
+   ```sh
+   tr -d '\r' < SHA256SUMS-1.1.0.txt | sed -E 's#([0-9a-f]{64}).*/([^/]+)#\1  \2#' | sha256sum -c
+   ```
+
+   Windows 可用 `Get-FileHash <文件> -Algorithm SHA256` 对照上面的表格。
+
+签名文件位于 [release/](release/)；签名内容就是 Release 上同名校验文件的原字节，因此 `gpg --verify` 在任何平台都能复现。
+
+## Code signing policy
+
+Free code signing provided by SignPath.io, certificate by SignPath Foundation（申请中，尚未生效）。
+
+- Committers and reviewers: zhongjing（本仓库唯一维护者，提交权限见 https://github.com/minister-sol ）
+- Approvers: zhongjing
+- 构建来源：安装包只在公开仓库源码上构建，签名只作用于本次构建产物，不对第三方二进制签名。
+- 当前状态：Windows 安装包尚未 Authenticode 签名；Linux 包的 SHA-256 清单由项目 GPG 密钥（指纹见上）分离签名。
+- 隐私政策：This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. 桌面版内嵌离线站点，无遥测、无自动更新回传。
+
 ## 第一次回放 · 跟着最大的数走一轮
 
 1. 在仓库根目录运行下面的命令，再打开 [本地 CodeLens](http://127.0.0.1:8000/)。
