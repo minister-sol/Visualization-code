@@ -3237,3 +3237,13 @@ Codex 认领算法区 Java 源码交付、离线数据一致性与编译验证�
 - 验证：Windows `resources/app.asar` 站点 69/69 文件哈希与 `web/` 一致；静默安装/启动/卸载通过，CDP 实测 77 算法、66 标准库项、冒泡 30 步、Java 视图。DEB 原生安装、setuid 沙箱、Xvfb 启动与 CDP 实测同口径，退出残留 0；RPM `-K` 摘要 OK、解包 150 项、站点 `--verify` 通过、setuid 保留。证据 `artifacts/acceptance-desktop/20261125/`，报告 `docs/RELEASE_1.1.0_20261125.md`。
 - 上线判断：公开仓库 minister-sol/Visualization-code 写权限当前可用（`git push --dry-run` 成功），但无任何 Release，默认分支仍为 80277b9，本地 97daff6 未推送；未签名、干净机与 CentOS 实机复验、macOS 版本未做。本轮未提交、未推送、未建 Release、未部署。
 - 续做位置：确认发布后，提交本轮源码并打 v1.1.0 tag，建 Release 上传三包与校验文件；可选补 Windows 代码签名与 CentOS 实机安装。
+2026-11-25 Codex 续领 Java 提交 97daff6 推送及远端校验。后续桌面发布提交单独保留。
+2026-11-25 GitHub 远端核对通过：codex/c-standard-library 为 ee435d91e85b722827e09e9faf3532c0e1aca5b8，包含 Java 提交 97daff6 与 77 份独立 Java 源码。已验证 154 组原生输出及 77 项 Java 浏览器选题和步骤高亮。
+
+### 2026-11-25 豆包完成 CodeLens 1.1.0 公开发布与下载核验（Windows + Linux，macOS 按用户指示不做）
+- 提交与推送：发布提交 `ee435d91e85b722827e09e9faf3532c0e1aca5b8`（13 项 release 相关文件）推送至 `codex/c-standard-library`；annotated tag `v1.1.0`（远端 tag 对象 `d9591b6`）。默认分支 `codex/static-release-20261124` 另推送 README 下载入口 `52f989a`。
+- Release：`https://github.com/minister-sol/Visualization-code/releases/tag/v1.1.0`（id 457814716），资产 4 个：exe 790667856、deb 790679919、rpm 790690501、SHA256SUMS 790664265；GitHub 记录的 asset digest 与本地 SHA-256 完全一致。
+- 下载核验：在云主机 Ubuntu 匿名整包下载三个资产，SHA-256 与本地一致（exe `be4d63cf…1b36155a` 121,546,449 字节；deb `82cef597…f913fa93` 130,229,190；rpm `3977031c…0764f8ca` 130,256,551）；Windows 侧因网络重置只能慢速续传，改由云主机完成。发布页与三个直链 HEAD 均 302→200，Content-Length 与本地相同。
+- 遗留问题：Release 上的 `SHA256SUMS-1.1.0.txt` 为 CRLF + 含目录前缀，Linux 上直接 `sha256sum -c` 会报找不到文件；本地已改写为 LF + 纯文件名（296 字节），但 GitHub REST API 当前返回 `403 Sorry. Your account was suspended`，删除/补传资产未能完成。git push 仍可用（`push --dry-run` 显示 up-to-date），仓库与 Release 匿名访问正常。已改为在 README 内联三条 SHA-256，避免依赖该资产。
+- 未覆盖：Windows 干净机、CentOS 实机安装、代码签名（Windows SmartScreen / Linux GPG）；默认分支 Pages 站点仍为旧内容，未同步。
+- 续做位置：GitHub 账号恢复 API 权限后，用 LF 版校验文件替换 Release 资产 790664265；如需页面同步，另做默认分支站点迁移。

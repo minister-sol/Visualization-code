@@ -5,7 +5,8 @@
 - 已发现并修复的交付缺口：1.0.0 的 Windows、DEB、RPM 三个安装包内嵌的都是 11-24 20:45 的旧静态站点（66 个文件），缺少 11-25 新增的 66 项 C 标准库教学内容、Java 77 语言入口更新、宽屏主栏与背景连击误选修复等改动。
 - 现已按当前源码重建三平台安装包（Windows x64 NSIS、Ubuntu amd64 DEB、CentOS x86_64 RPM），版本统一为 1.1.0，内嵌静态站点为 69 个文件 + MANIFEST.json，逐文件哈希与仓库 `web/` 源码一致。
 - Windows 安装包与 Ubuntu DEB 已在本机真实安装、启动、交互、卸载验证通过；RPM 已完成元数据、摘要与载荷核验，未在 CentOS 实机安装。
-- 上线条件：GitHub 仓库为公开仓库，写权限当前可用（`git push --dry-run` 成功）；但仓库尚无任何 Release，默认分支仍停在 `codex/static-release-20261124`（80277b9），不含本轮内容。公开发布需要先提交对应源码、建 tag、建 Release 并上传 3 个安装包。
+- 已上线：源码提交 `ee435d9`、tag `v1.1.0`、GitHub Release `v1.1.0`（id 457814716）均已完成，三个安装包与校验清单可从公网匿名下载，下载后 SHA-256 与本地产物逐一一致。
+- 上线方式为 GitHub Releases 直链下载，README 已加下载入口；默认分支 Pages 站点仍是旧内容，与安装包无关。
 - 仍缺：代码签名证书（三个包均未签名，Windows 会触发 SmartScreen 提示）；干净 Windows 与 CentOS 实机复验；macOS 包为 1.0.0 旧版，不在本轮。
 
 ## 1.0.0 与当前源码的差异（交付缺口）
@@ -42,10 +43,27 @@
 - 运行：Xvfb 1440×960 启动已安装 DEB 程序，CDP 实测 77 个算法入口、67 个标准库项、冒泡 30 步、`strncmp` 3 步、Java 视图正常；`Browser.close` 后残留进程 0。
 - 证据：`artifacts/acceptance-desktop/20261125/linux-evidence-1.1.0.md`、`linux-smoke-1440.png`。
 
-## 未覆盖与上线判断
+## 上线结果（公开发布）
+
+- 发布提交：`ee435d91e85b722827e09e9faf3532c0e1aca5b8`（“Ship CodeLens 1.1.0 desktop installers with current 69-file site”），分支 `codex/c-standard-library`；annotated tag `v1.1.0`（远端 tag 对象 `d9591b6`）。
+- Release 页面：https://github.com/minister-sol/Visualization-code/releases/tag/v1.1.0（标题「CodeLens 1.1.0 · Windows / Linux 安装包」，HTTP 200）。
+- 资产与 GitHub 记录的 digest：
+
+| 资产 | 大小（字节） | GitHub digest / 本地 SHA-256 |
+|---|---|---|
+| `CodeLens-Setup-1.1.0-x64.exe` | 121,546,449 | `sha256:be4d63cf…1b36155a` |
+| `codelens-desktop_1.1.0_amd64.deb` | 130,229,190 | `sha256:82cef597…c1f913fa93` |
+| `codelens-desktop-1.1.0-1.x86_64.rpm` | 130,256,551 | `sha256:3977031c…b80764f8ca` |
+| `SHA256SUMS-1.1.0.txt` | 326 | 校验清单（Release 现存版本为 CRLF 且带目录前缀，Linux 上建议直接比对上面表格的哈希） |
+
+- 下载入口：`https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/<文件名>`；README（发布分支与默认分支）均已加「下载安装包（1.1.0）」表格与三条 SHA-256。
+- 公网下载核验（匿名、无凭据，在云主机 Ubuntu 上整包下载并比对）：三个安装包大小与本地一致，SHA-256 全部匹配（逐条 `sha256sum` 比对）。Windows 侧因网络重置只能慢速续传（约 19 KB/s），改用云主机完成整包核验。
+- 已知限制：GitHub 在国内网络下直链下载速度不稳定；三个包均未代码签名。Release 校验文件为 Windows 生成的 CRLF 版，`sha256sum -c` 在 Linux 上不可直接使用，本地已生成 LF 版但因账号 API 受限（`403 Sorry. Your account was suspended`）暂未替换资产。
+
+## 未覆盖
 
 - 未签名：Windows 首次运行可能出现 SmartScreen「未知发布者」；Linux 包无 GPG 签名。
 - Windows 复验机为本机（PATH 含 Python/Node），非干净机；CentOS 仅做载荷与元数据核验，未在 CentOS 实机安装。
-- macOS：现有 DMG 为 1.0.0，未随本轮重新构建。
-- 发布通道：GitHub `minister-sol/Visualization-code` 为公开仓库，`git push --dry-run` 成功，说明写权限可用；但当前远端只有 `codex/c-standard-library`（b3e8052）与 `codex/static-release-20261124`（80277b9），本地 `codex/c-standard-library` 的 97daff6（Java 77 集成）尚未推送，且工作树还有 11 个已改文件与大量未跟踪内容。
-- 因此「可下载上线」在技术上已具备：提交本轮源码 → 打 tag `v1.1.0` → 建 GitHub Release → 上传三个安装包 + `SHA256SUMS`。当前未执行任何提交、推送、Release 或部署。
+- macOS：现有 DMG 为 1.0.0，未随本轮重新构建（用户本轮明确“mac 版本先不管”）。
+- 默认分支 `codex/static-release-20261124` 与发布分支历史不相关（diff 379 文件），其 GitHub Pages 站点（https://minister-sol.github.io/Visualization-code/）仍是旧内容，未同步新站点；安装包内嵌站点已是最新，不受影响。如需页面同步，需另做迁移方案。
+

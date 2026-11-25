@@ -14,7 +14,15 @@
 | Ubuntu amd64 | [codelens-desktop_1.1.0_amd64.deb](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/codelens-desktop_1.1.0_amd64.deb) | Ubuntu 22.04 及以上（依赖 GTK3、NSS、ALSA 等） |
 | CentOS x86_64 | [codelens-desktop-1.1.0-1.x86_64.rpm](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/codelens-desktop-1.1.0-1.x86_64.rpm) | CentOS Stream 9 x86_64 |
 
-SHA-256 校验值见 [artifacts/SHA256SUMS-1.1.0.txt](artifacts/SHA256SUMS-1.1.0.txt) 与 Release 说明。安装包暂未代码签名，Windows 首次运行可能提示“未知发布者”。离线构建与验收记录见 [docs/RELEASE_1.1.0_20261125.md](docs/RELEASE_1.1.0_20261125.md)。
+SHA-256 校验值（下载后逐条比对；Release 附带的校验文件为 Windows 换行，Linux 上建议直接照下表核对）：
+
+```
+be4d63cfa1ccff55074c6b5ba959a6ba4ca26dc6f4c8e00c03e286ed1b36155a  CodeLens-Setup-1.1.0-x64.exe
+82cef59761cf2ab7798b0952115e1b8e9708cd890d3ca859e22c85c1f913fa93  codelens-desktop_1.1.0_amd64.deb
+3977031c1ae0383bd59784f50ecf4f950a89bc84a76bdaa116a825b80764f8ca  codelens-desktop-1.1.0-1.x86_64.rpm
+```
+
+安装包暂未代码签名，Windows 首次运行可能提示“未知发布者”。构建、验证与上线记录见 [docs/RELEASE_1.1.0_20261125.md](docs/RELEASE_1.1.0_20261125.md)。
 
 ## 第一次回放 · 跟着最大的数走一轮
 
