@@ -1,0 +1,10 @@
+* text=auto
+
+# Shell scripts must keep LF, otherwise bash refuses to run them after a Windows checkout.
+*.sh text eol=lf
+*.ps1 text eol=crlf
+
+# Signatures, keys and checksum files are binary-ish: never touch their bytes.
+*.asc -text
+*.gpg -text
+SHA256SUMS* -text
