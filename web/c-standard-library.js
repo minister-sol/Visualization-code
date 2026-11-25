@@ -78,12 +78,19 @@
     const marked = example.source.findIndex(s => s.includes('/* @call'));
     const line = (marked >= 0 ? marked : example.source.findIndex(s => s.includes(name+'('))) + 1;
     const missing = (name === 'strchr' || name === 'strstr') && result === 'NULL';
+    const markers = {
+      strrchr: result === 'NULL' ? '@no_match' : '@matched',
+      sscanf: /^(0|EOF)$/.test(result) ? '@no_assignment' : null,
+      strtok: result === 'end' ? '@end_tokens' : null,
+      strftime: result === '0' ? '@time_length' : null
+    };
+    const outputMarker = markers[name];
     const simulatedFailure = name === 'realloc' && args[1] === 'failure';
     const outputLine = (name === 'realloc'
       ? example.source.findIndex((s, i) => i >= line && s.includes('printf') &&
           s.includes('@failure_output') === simulatedFailure)
       : example.source.findIndex((s, i) => i >= line &&
-          (missing ? s.includes('puts("NULL")') : /printf|puts/.test(s)))) + 1;
+          (outputMarker ? s.includes(outputMarker) : missing ? s.includes('puts("NULL")') : /printf|puts/.test(s)))) + 1;
     return [[example.stdin ? null : example.source.findIndex(s => s.includes('argv[1]'))+1,'读取参数 ' + JSON.stringify(args)],
       [line,(simulatedFailure ? '模拟 realloc 返回 NULL。' : '调用 ' + name + '。') + example.note],
       [outputLine,'程序输出 ' + JSON.stringify(result)]]
@@ -110,62 +117,62 @@
   "}"
 ];
   const prototypes = {
-  "strlen": "size_t strlen(const char *s); · §7.24.6.3",
-  "strcmp": "int strcmp(const char *s1, const char *s2); · §7.24.4.2",
-  "strncmp": "int strncmp(const char *s1, const char *s2, size_t n); · §7.24.4.4",
-  "strcpy": "char *strcpy(char * restrict s1, const char * restrict s2); · §7.24.2.3",
-  "strcat": "char *strcat(char * restrict s1, const char * restrict s2); · §7.24.3.1",
-  "strchr": "char *strchr(const char *s, int c); · §7.24.5.2",
-  "strstr": "char *strstr(const char *s1, const char *s2); · §7.24.5.7",
-  "memcpy": "void *memcpy(void * restrict s1, const void * restrict s2, size_t n); · §7.24.2.1",
-  "memmove": "void *memmove(void *s1, const void *s2, size_t n); · §7.24.2.2",
-  "memset": "void *memset(void *s, int c, size_t n); · §7.24.6.1",
-  "memcmp": "int memcmp(const void *s1, const void *s2, size_t n); · §7.24.4.1",
-  "isdigit": "int isdigit(int c); · §7.4.1.5",
-  "isalpha": "int isalpha(int c); · §7.4.1.2",
-  "isalnum": "int isalnum(int c); · §7.4.1.1",
-  "isspace": "int isspace(int c); · §7.4.1.10",
-  "toupper": "int toupper(int c); · §7.4.2.2",
-  "tolower": "int tolower(int c); · §7.4.2.1"
+  "strlen": "size_t strlen(const char *s); · C99 §7.21.6.3",
+  "strcmp": "int strcmp(const char *s1, const char *s2); · C99 §7.21.4.2",
+  "strncmp": "int strncmp(const char *s1, const char *s2, size_t n); · C99 §7.21.4.4",
+  "strcpy": "char *strcpy(char * restrict s1, const char * restrict s2); · C99 §7.21.2.3",
+  "strcat": "char *strcat(char * restrict s1, const char * restrict s2); · C99 §7.21.3.1",
+  "strchr": "char *strchr(const char *s, int c); · C99 §7.21.5.2",
+  "strstr": "char *strstr(const char *s1, const char *s2); · C99 §7.21.5.7",
+  "memcpy": "void *memcpy(void * restrict s1, const void * restrict s2, size_t n); · C99 §7.21.2.1",
+  "memmove": "void *memmove(void *s1, const void *s2, size_t n); · C99 §7.21.2.2",
+  "memset": "void *memset(void *s, int c, size_t n); · C99 §7.21.6.1",
+  "memcmp": "int memcmp(const void *s1, const void *s2, size_t n); · C99 §7.21.4.1",
+  "isdigit": "int isdigit(int c); · C99 §7.4.1.5",
+  "isalpha": "int isalpha(int c); · C99 §7.4.1.2",
+  "isalnum": "int isalnum(int c); · C99 §7.4.1.1",
+  "isspace": "int isspace(int c); · C99 §7.4.1.10",
+  "toupper": "int toupper(int c); · C99 §7.4.2.2",
+  "tolower": "int tolower(int c); · C99 §7.4.2.1"
 };
   Object.assign(prototypes, {
-  "printf": "int printf(const char * restrict format, ...); · §7.21.6.3",
-  "scanf": "int scanf(const char * restrict format, ...); · §7.21.6.4",
-  "getchar": "int getchar(void); · §7.21.7.6",
-  "putchar": "int putchar(int c); · §7.21.7.8",
-  "puts": "int puts(const char *s); · §7.21.7.9",
-  "fgets": "char *fgets(char * restrict s, int n, FILE * restrict stream); · §7.21.7.2",
-  "snprintf": "int snprintf(char * restrict s, size_t n, const char * restrict format, ...); · §7.21.6.5",
-  "atoi": "int atoi(const char *nptr); · §7.22.1.2",
-  "strtol": "long int strtol(const char * restrict nptr, char * restrict * restrict endptr, int base); · §7.22.1.4",
-  "strtod": "double strtod(const char * restrict nptr, char * restrict * restrict endptr); · §7.22.1.3",
-  "malloc": "void *malloc(size_t size); · §7.22.3.4",
-  "calloc": "void *calloc(size_t nmemb, size_t size); · §7.22.3.2",
-  "realloc": "void *realloc(void *ptr, size_t size); · §7.22.3.5",
-  "free": "void free(void *ptr); · §7.22.3.3",
-  "qsort": "void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)); · §7.22.5.2",
-  "bsearch": "void *bsearch(const void *key, const void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)); · §7.22.5.1",
-  "fopen": "FILE *fopen(const char * restrict filename, const char * restrict mode); · §7.21.5.3",
-  "fclose": "int fclose(FILE *stream); · §7.21.5.1",
-  "fprintf": "int fprintf(FILE * restrict stream, const char * restrict format, ...); · §7.21.6.1",
-  "fscanf": "int fscanf(FILE * restrict stream, const char * restrict format, ...); · §7.21.6.2",
-  "fread": "size_t fread(void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream); · §7.21.8.1",
-  "fwrite": "size_t fwrite(const void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream); · §7.21.8.2",
-  "fseek": "int fseek(FILE *stream, long int offset, int whence); · §7.21.9.2",
-  "ftell": "long int ftell(FILE *stream); · §7.21.9.4",
-  "sqrt": "double sqrt(double x); · §7.12.7.5",
-  "pow": "double pow(double x, double y); · §7.12.7.4",
-  "fabs": "double fabs(double x); · §7.12.7.2",
-  "floor": "double floor(double x); · §7.12.9.2",
-  "ceil": "double ceil(double x); · §7.12.9.1",
-  "round": "double round(double x); · §7.12.9.6",
-  "sin": "double sin(double x); · §7.12.4.6",
-  "cos": "double cos(double x); · §7.12.4.5",
-  "rand": "int rand(void); · §7.22.2.1",
-  "srand": "void srand(unsigned int seed); · §7.22.2.2",
-  "time": "time_t time(time_t *timer); · §7.27.2.4",
-  "difftime": "double difftime(time_t time1, time_t time0); · §7.27.2.2",
-  "clock": "clock_t clock(void); · §7.27.2.1"
+  "printf": "int printf(const char * restrict format, ...); · C99 §7.19.6.3",
+  "scanf": "int scanf(const char * restrict format, ...); · C99 §7.19.6.4",
+  "getchar": "int getchar(void); · C99 §7.19.7.6",
+  "putchar": "int putchar(int c); · C99 §7.19.7.8",
+  "puts": "int puts(const char *s); · C99 §7.19.7.9",
+  "fgets": "char *fgets(char * restrict s, int n, FILE * restrict stream); · C99 §7.19.7.2",
+  "snprintf": "int snprintf(char * restrict s, size_t n, const char * restrict format, ...); · C99 §7.19.6.5",
+  "atoi": "int atoi(const char *nptr); · C99 §7.20.1.2",
+  "strtol": "long int strtol(const char * restrict nptr, char * restrict * restrict endptr, int base); · C99 §7.20.1.4",
+  "strtod": "double strtod(const char * restrict nptr, char * restrict * restrict endptr); · C99 §7.20.1.3",
+  "malloc": "void *malloc(size_t size); · C99 §7.20.3.3",
+  "calloc": "void *calloc(size_t nmemb, size_t size); · C99 §7.20.3.1",
+  "realloc": "void *realloc(void *ptr, size_t size); · C99 §7.20.3.4",
+  "free": "void free(void *ptr); · C99 §7.20.3.2",
+  "qsort": "void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)); · C99 §7.20.5.2",
+  "bsearch": "void *bsearch(const void *key, const void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)); · C99 §7.20.5.1",
+  "fopen": "FILE *fopen(const char * restrict filename, const char * restrict mode); · C99 §7.19.5.3",
+  "fclose": "int fclose(FILE *stream); · C99 §7.19.5.1",
+  "fprintf": "int fprintf(FILE * restrict stream, const char * restrict format, ...); · C99 §7.19.6.1",
+  "fscanf": "int fscanf(FILE * restrict stream, const char * restrict format, ...); · C99 §7.19.6.2",
+  "fread": "size_t fread(void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream); · C99 §7.19.8.1",
+  "fwrite": "size_t fwrite(const void * restrict ptr, size_t size, size_t nmemb, FILE * restrict stream); · C99 §7.19.8.2",
+  "fseek": "int fseek(FILE *stream, long int offset, int whence); · C99 §7.19.9.2",
+  "ftell": "long int ftell(FILE *stream); · C99 §7.19.9.4",
+  "sqrt": "double sqrt(double x); · C99 §7.12.7.5",
+  "pow": "double pow(double x, double y); · C99 §7.12.7.4",
+  "fabs": "double fabs(double x); · C99 §7.12.7.2",
+  "floor": "double floor(double x); · C99 §7.12.9.2",
+  "ceil": "double ceil(double x); · C99 §7.12.9.1",
+  "round": "double round(double x); · C99 §7.12.9.6",
+  "sin": "double sin(double x); · C99 §7.12.4.6",
+  "cos": "double cos(double x); · C99 §7.12.4.5",
+  "rand": "int rand(void); · C99 §7.20.2.1",
+  "srand": "void srand(unsigned int seed); · C99 §7.20.2.2",
+  "time": "time_t time(time_t *timer); · C99 §7.23.2.4",
+  "difftime": "double difftime(time_t time1, time_t time0); · C99 §7.23.2.2",
+  "clock": "clock_t clock(void); · C99 §7.23.2.1"
 });
   globalThis.CLibrary = {examples, steps, prototypes, define};
 })();

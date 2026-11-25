@@ -99,7 +99,7 @@ const teachingTopics={
  ahoCorasick:{purpose:'在一段文本中同时查找多个模式，适合关键词过滤与多词检索。',io:'输入最多 50 个小写字母的文本及最多 8 个模式，每个模式 1–10 个小写字母；输出模式及起始索引，允许重叠和重复模式。',symbols:'state 是当前节点，fail 是失败链接，queue 保存待处理节点；patterns 是模式数组，np 是模式数，matches 记录结果，Match 是结果类型，used 是已创建节点数。'}
 };
 for (const [name, example] of Object.entries(globalThis.CLibrary?.examples || {})) {
-  const labels = {text:'文本',capacity:'缓冲区容量',count:'元素数或循环次数',a:'第一个值',b:'第二个值',key:'查找目标',mode:'打开模式',offset:'偏移量',first:'第一个整数',second:'第二个整数',third:'第三个整数',exponent:'指数',seed:'随机种子',shift:'相对秒数',start:'开始时间',end:'结束时间',scenario:'扩容模式（success 或 failure）'};
+  const labels = {text:'文本',capacity:'缓冲区容量',count:'元素数或循环次数',a:'第一个值',b:'第二个值',key:'查找目标',mode:'打开模式',offset:'偏移量',first:'第一个整数',second:'第二个整数',third:'第三个整数',exponent:'指数',seed:'随机种子',shift:'相对秒数',start:'开始时间',end:'结束时间',scenario:'扩容模式（success 或 failure）',base:'进制（10 或 16）',year:'年份',month:'月份',day:'日期'};
   topics[name] = ['调用参数', example.args.map(arg => arg[1]).join('\n'),
     '按顺序输入 ' + example.args.map(([key]) => labels[key] || key).join('、') + (example.args.length > 1 ? '，每行一个参数。' : '。') +
     (name === 'strlen' ? '按 UTF-8 字节计数。' : '本例使用 ASCII 字符。')];

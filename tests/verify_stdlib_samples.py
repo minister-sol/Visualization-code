@@ -23,6 +23,9 @@ const boundary = {
   fopen:['rb'], fclose:[''], fprintf:[''], fscanf:[''], fread:['abc','5'],
   fwrite:[''], fseek:['abc','3'], ftell:['abc','0'], sqrt:['0'], pow:['-2','3'],
   fabs:['-0'], floor:['-2.1'], ceil:['-0.5'], round:['-2.5'], sin:['0'], cos:['0'],
+  strcspn:['hello',''], strrchr:['abc','z'], strtok:[';;;',';'], sscanf:['x'],
+  strtoul:['bad','10'], isxdigit:['g'], feof:['abc','3'], ferror:['abc','3'],
+  perror:['open'], fmod:['5.5','2'], hypot:['-6','8'], strftime:['2024','2','29','10'],
   rand:['0'], srand:['65535'], time:['0'], difftime:['70','10'], clock:['0']
 };
 console.log(JSON.stringify(Object.entries(CLibrary.examples).map(([name, example]) => ({
@@ -60,7 +63,7 @@ def main():
     if args.export_model:
         args.export_model.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
         return
-    assert len(data) == 54
+    assert len(data) == 66
     compiler = os.environ.get('CC', 'cc' if os.name != 'nt' else 'gcc')
     total = 0
     with tempfile.TemporaryDirectory() as tmp:
@@ -77,7 +80,10 @@ def main():
                 with tempfile.TemporaryDirectory(dir=tmp) as cwd:
                     command = [str(executable), *([] if example['stdin'] else args)]
                     input_data = args[0].encode() if example['stdin'] else b''
-                    raw = subprocess.check_output(command, input=input_data, cwd=cwd)
+                    native = subprocess.run(command, input=input_data, cwd=cwd, capture_output=True, check=True)
+                    if name == 'perror':
+                        assert native.stderr.startswith(args[0].encode() + b': '), native.stderr
+                    raw = native.stdout
                 output = raw.decode().replace('\r\n', '\n').removesuffix('\n')
                 assert matches(output, expected), (name, args, output, expected)
                 total += 1

@@ -153,3 +153,133 @@
     'long n = strtol(count,NULL,10);\nif (n < 0 || n > 1000000) return 1;\nclock_t start = clock(); /* demo */\nvolatile unsigned long total = 0;\nfor (long i = 0; i < n; ++i) total += (unsigned long)i;\n(void)total;\nclock_t end = clock();\nif (start == (clock_t)-1 || end == (clock_t)-1) return 1;\nprintf("%d\\n", ((double)end - (double)start)/CLOCKS_PER_SEC >= 0);',
     s=>{integer(s,0,1000000);return 1;},'标准定义为程序所使用的处理器时间的近似值。相减后除以 CLOCKS_PER_SEC 得到秒。样板在计时可用且未回绕时检查差值非负。');
 })();
+
+(() => {
+  const {define, prototypes} = CLibrary;
+  const asciiSpace = '[\\t\\v\\f\\r\\n ]';
+  function boundedInteger(input, low, high) {
+    const number = Number(input);
+    if (!/^\d+$/.test(input) || !Number.isSafeInteger(number) || number < low || number > high)
+      throw Error('请输入 ' + low + ' 到 ' + high + ' 之间的整数。');
+    return number;
+  }
+  function finiteDecimal(input) {
+    const number = Number(input);
+    if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(input) || !Number.isFinite(number))
+      throw Error('请输入有限的十进制数。');
+    return number;
+  }
+  function register(name, header, clause, prototype, args, body, evaluate, note, helpers) {
+    prototypes[name] = prototype + ' · C99 §' + clause;
+    define(name, args, body.trimEnd().slice(1).split('\n').map(line => line.slice(4)).join('\n'),
+      evaluate, note, header, helpers);
+  }
+
+  register('strcspn', 'string.h', '7.21.5.3', 'size_t strcspn(const char *s1, const char *s2);',
+    [['text','hello,world'],['key',',;']],
+    '\n    size_t length = strcspn(text, key); /* demo */\n    printf("%zu\\n", length);',
+    (value, rejected) => {
+      const index = [...value].findIndex(ch => rejected.includes(ch));
+      return index < 0 ? value.length : index;
+    }, '从开头数到第一个分隔字符；返回其前面的字节数。');
+
+  register('strrchr', 'string.h', '7.21.5.5', 'char *strrchr(const char *s, int c);',
+    [['text','notes.v1.c'],['key','.']],
+    '\n    if (key[0] && key[1]) return 1;\n    const char *hit = strrchr(text, (unsigned char)key[0]); /* demo */\n    if (hit == NULL) puts("NULL"); /* @no_match */\n    else printf("%td\\n", hit - text); /* @matched */',
+    (value, key) => {
+      if (key.length > 1) throw Error('第二行只填一个字符，留空表示查找终止符。');
+      const index = key ? value.lastIndexOf(key) : value.length;
+      return index < 0 ? 'NULL' : index;
+    }, '从字符串末尾找最后一次出现的字符；样板输出字节偏移，未找到时输出 NULL。');
+
+  register('strtok', 'string.h', '7.21.5.8', 'char *strtok(char *restrict s1, const char *restrict s2);',
+    [['text','red,,green;blue'],['key',',;']],
+    '\n    char buffer[129];\n    if (strlen(text) >= sizeof buffer) return 1;\n    strcpy(buffer, text);\n    char *token = strtok(buffer, key); /* demo */\n    while (token != NULL)\n    {\n        puts(token);\n        token = strtok(NULL, key);\n    }\n    puts("end"); /* @end_tokens */',
+    (value, delimiters) => {
+      if (value.length > 128) throw Error('文本最多 128 字节。');
+      const tokens = [];
+      let token = '';
+      for (const ch of value) {
+        if (!delimiters.includes(ch)) token += ch;
+        else if (token) {
+          tokens.push(token);
+          token = '';
+        }
+      }
+      if (token) tokens.push(token);
+      return [...tokens, 'end'].join('\n');
+    }, '样板复制到可写数组再分词，每行输出一个词，最后输出 end。');
+
+  register('sscanf', 'stdio.h', '7.19.6.7', 'int sscanf(const char *restrict s, const char *restrict format, ...);',
+    [['text','42 items']],
+    '\n    char digits[8];\n    int count = sscanf(text, "%7[0123456789]", digits); /* demo */\n    if (count == 1) printf("1\\n%s\\n", digits);\n    else puts(count == EOF ? "EOF" : "0"); /* @no_assignment */',
+    value => {
+      const digits = /^[0-9]{1,7}/.exec(value);
+      return digits ? '1\n' + digits[0] : value ? '0' : 'EOF';
+    }, '从字符串扫描。样板把开头最多 7 个数字字符存进数组，返回赋值项数。');
+
+  register('strtoul', 'stdlib.h', '7.20.1.4', 'unsigned long strtoul(const char *restrict nptr, char **restrict endptr, int base);',
+    [['text','0x2a!'],['base','16']],
+    '\n    if (strcmp(base, "10") && strcmp(base, "16")) return 1;\n    int radix = strcmp(base, "10") == 0 ? 10 : 16;\n    if (text[strspn(text, " \\t\\n\\r\\v\\f")] == \'-\') return 1;\n    char *end;\n    errno = 0;\n    unsigned long value = strtoul(text, &end, radix); /* demo */\n    if (errno == ERANGE || value > 65535UL) return 1;\n    printf("%lu\\n%td\\n", value, end - text);',
+    (value, base) => {
+      if (base !== '10' && base !== '16') throw Error('进制请输入 10 或 16。');
+      const format = base === '16' ? '(?:0[xX])?[0-9a-fA-F]+' : '[0-9]+';
+      const match = new RegExp('^' + asciiSpace + '*\\+?' + format).exec(value);
+      if (new RegExp('^' + asciiSpace + '*-').test(value)) throw Error('这个样板只接受非负数。');
+      if (!match) return '0\n0';
+      const number = parseInt(match[0], Number(base));
+      if (number > 65535) throw Error('这个样板最多演示 65535。');
+      return number + '\n' + match[0].length;
+    }, '输出转换值和停止位置。页面允许十进制或十六进制，并把示例值限制在 0 到 65535。', '#include <errno.h>');
+
+  register('isxdigit', 'ctype.h', '7.4.1.12', 'int isxdigit(int c);', [['text','F']],
+    '\n    if (strlen(text) != 1) return 1;\n    int result = isxdigit((unsigned char)text[0]); /* demo */\n    printf("%d\\n", result != 0);',
+    value => {
+      if (value.length !== 1) throw Error('请输入一个 ASCII 字符。');
+      return Number(/^[0-9a-fA-F]$/.test(value));
+    }, '判断一个字符能不能用于十六进制整数，样板把真统一为 1。');
+
+  for (const name of ['feof','ferror']) {
+    const eof = name === 'feof';
+    register(name, 'stdio.h', eof ? '7.19.10.2' : '7.19.10.3', 'int ' + name + '(FILE *stream);',
+      [['text','abc'],['count','5']],
+      '\n    FILE *file = tmpfile();\n    if (file == NULL) return 1;\n    if (fputs(text, file) == EOF || fseek(file, 0, SEEK_SET) != 0)\n    {\n        fclose(file);\n        return 1;\n    }\n    char buffer[33];\n    size_t n = (size_t)strtoul(count, NULL, 10);\n    if (n > sizeof buffer) return 1;\n    size_t got = fread(buffer, 1, n, file);\n    int flag = ' + name + '(file); /* demo */\n    printf("%zu\\n%d\\n", got, flag != 0);\n    fclose(file);',
+      (value, count) => {
+        const requested = boundedInteger(count, 0, 33);
+        return Math.min(value.length, requested) + '\n' + Number(eof && requested > value.length);
+      }, eof
+        ? '先读取，再查看 EOF 标志。页面输出实际读取数和标志是否已置位。'
+        : '先读取，再查看错误标志。页面用正常文件演示读到末尾时错误标志仍为 0。');
+  }
+
+  register('perror', 'stdio.h', '7.19.10.4', 'void perror(const char *s);', [['text','math']],
+    '\n    /* 用 C99 保证存在的错误码模拟失败，避免依赖系统文件路径。 */\n    errno = EDOM;\n    perror(text); /* demo */\n    puts("stderr");',
+    () => 'stderr', '用一个可复现的错误码演示往 stderr 写诊断。页面显示输出流，错误正文随系统和语言环境变化。', '#include <errno.h>');
+
+  for (const name of ['fmod','hypot']) {
+    const remainder = name === 'fmod';
+    register(name, 'math.h', remainder ? '7.12.10.1' : '7.12.7.3', 'double ' + name + '(double x, double y);',
+      remainder ? [['a','-5.5'],['b','2']] : [['a','3'],['b','4']],
+      '\n    double x = strtod(a, NULL);\n    double y = strtod(b, NULL);\n' +
+      (remainder ? '    if (y == 0.0) return 1;\n' : '') +
+      '    double result = ' + name + '(x, y); /* demo */\n    printf("%.8g\\n", result);',
+      (a,b) => {
+        const x = finiteDecimal(a);
+        const y = finiteDecimal(b);
+        if (remainder && y === 0) throw Error('除数必须非零。');
+        const result = remainder ? x % y : Math.hypot(x,y);
+        if (!Number.isFinite(result)) throw Error('本样板只展示有限结果。');
+        return Object.is(result,-0) ? '-0' : Number(result.toPrecision(8));
+      }, remainder ? '计算浮点余数，非零结果与被除数同号。' : '求直角三角形的斜边长度，或二维向量的长度。');
+  }
+
+  register('strftime', 'time.h', '7.23.3.5', 'size_t strftime(char *restrict s, size_t maxsize, const char *restrict format, const struct tm *restrict timeptr);',
+    [['year','2026'],['month','11'],['day','25'],['capacity','16']],
+    '\n    struct tm date = {0};\n    long y = strtol(year, NULL, 10), m = strtol(month, NULL, 10), d = strtol(day, NULL, 10);\n    long n = strtol(capacity, NULL, 10);\n    char buffer[33];\n    if (y < 2000 || y > 2099 || m < 1 || m > 12 || d < 1 || d > 31 || n < 1 || n > (long)sizeof buffer) return 1;\n    const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};\n    if (d > days[m - 1] + (m == 2 && y % 4 == 0)) return 1;\n    date.tm_year = y - 1900;\n    date.tm_mon = m - 1;\n    date.tm_mday = d;\n    size_t length = strftime(buffer, n, "%Y-%m-%d", &date); /* demo */\n    if (length != 0) puts(buffer);\n    printf("%zu\\n", length); /* @time_length */',
+    (y,m,d,n) => {
+      const year = boundedInteger(y,2000,2099);
+      const month = boundedInteger(m,1,12);
+      const day = boundedInteger(d,1,new Date(Date.UTC(year,month,0)).getUTCDate());
+      return boundedInteger(n,1,33) < 11 ? '0' : [year,month,day].map(value => String(value).padStart(2,'0')).join('-') + '\n10';
+    }, '按固定格式输出日期。缓冲区至少要有 11 字节，包含 10 个日期字符和结尾空字符。');
+})();

@@ -50,9 +50,9 @@ try {
       assert(id(control).value === name && !id('error').textContent, name + ' could not be selected');
     }
     const names = Object.keys(CLibrary.examples);
-    assert(names.length === 54, '54 library functions');
+    assert(names.length === 66, '66 library functions');
     assert([...id('topic').options].every(option => !names.includes(option.value)), 'separate algorithm options');
-    assert([...id('libraryTopic').options].filter(option => option.value).length === 54, 'separate library options');
+    assert([...id('libraryTopic').options].filter(option => option.value).length === 66, 'separate library options');
     for (const name of names) {
       select('libraryTopic', name);
       id('next').click();
@@ -75,7 +75,7 @@ try {
     id('topicSearch').dispatchEvent(new Event('input'));
     return names.length;
   });
-  assert.equal(count, 54);
+  assert.equal(count, 66);
   await evaluate(async () => {
     const id = name => document.getElementById(name);
     const assert = (value, label) => { if (!value) throw Error(label); };
@@ -151,7 +151,7 @@ try {
     if (document.getElementById('topic').value !== 'bubble' || document.getElementById('libraryTopic').value)
       throw Error('mobile algorithm change');
   });
-  console.log('54 library guides and syntax, 77 algorithms, playback, seek, rerun, fullscreen, and both layouts passed');
+  console.log('66 library guides and syntax, 77 algorithms, playback, seek, rerun, fullscreen, and both layouts passed');
 } finally {
   await call('Browser.close').catch(() => {});
   socket.close();

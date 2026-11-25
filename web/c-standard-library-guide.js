@@ -427,3 +427,102 @@ CLibrary.guide = {
     "examples": "默认 短循环前后 c1 >= c0；自定义 换算秒数 (c1-c0)/CLOCKS_PER_SEC 非负；边界 CLOCKS_PER_SEC > 0"
   }
 };
+
+Object.assign(CLibrary.guide, {
+  strcspn: {
+    parameters: '第一行填原文，第二行填一组要拦住的字符。第二行里的字符各自独立。',
+    requires: '两个参数都要指向以空字符结尾的字符串。',
+    returns: '返回从开头连续避开这些字符的字节数。一个都找不到时返回整串长度。',
+    effects: '只读取字符串。可用返回的下标在可写缓冲区中截断文本。',
+    examples: '输入 hello,world，分隔符填 ,;，结果为 5。分隔符留空时结果为 11。',
+    warning: '去掉 fgets 保留的换行时，可以用 buf[strcspn(buf, "\\n")] = 0。先确认 fgets 已成功。'
+  },
+  strrchr: {
+    parameters: '第一行填要查找的文本，第二行填一个字符。留空表示查找结尾空字符。',
+    requires: '要搜索的字符串必须以空字符结尾。',
+    returns: '返回最后一次出现的位置指针，未找到返回 NULL。样板把指针换算成从零开始的字节下标。',
+    effects: '只搜索，不改动输入。',
+    examples: '在 notes.v1.c 中找点号，返回下标 8。改找斜杠会得到 NULL。',
+    warning: '先检查是否为 NULL，再做指针相减或读取。'
+  },
+  strtok: {
+    parameters: '先传可写的字符串和分隔字符集合，后续调用把第一个参数换成 NULL。',
+    requires: '输入必须可写，样板先复制到本地数组。',
+    returns: '每次返回下一个词的起始指针，取完后返回 NULL。',
+    effects: '把词末尾的分隔字符改成空字符，并记住下一次从哪里开始。',
+    examples: 'red,,green;blue 加分隔符 ,; 会得到 red、green、blue。连续的逗号不会产生空字段。',
+    warning: '不要传字符串字面量，也别交错分词两个缓冲区。保留原文时，先分词副本。'
+  },
+  sscanf: {
+    parameters: '用户填一行待解析的文本。样板用固定格式和 8 字节数组，只取开头最多七个数字字符。',
+    requires: '目标指针必须和格式说明匹配，数组还要留一字节给空字符。',
+    returns: '成功赋值一项时返回 1，格式对不上时返回 0。赋值前输入已结束时返回 EOF。',
+    effects: '匹配成功才写入目标数组，不会从键盘读取。',
+    examples: '42 items 得到 1 和 42；items 得到 0；空串得到 EOF。',
+    warning: '先看赋值数再读变量。这个格式读的是数字文本，前导空格不会自动跳过。'
+  },
+  strtoul: {
+    parameters: '第一行填非负整数文本，第二行填进制 10 或 16。样板还传入 end 指针来记录读到哪里。',
+    requires: '调用前把 errno 清零。样板出于跨平台对照把值限制在 65535 以内。',
+    returns: '返回 unsigned long。没有读到数字时 end 指回开头；超范围时检查 ERANGE。',
+    effects: '字符串保持原样，end 指向还未解析的字符。',
+    examples: '0x2a! 配进制 16 得到 42 和停止位置 4。foo 配 10 得到 0 和位置 0。',
+    warning: '只看返回值 0 无法区分未转换和合法的零。要求输入非负时，应用应单独拒绝负号。'
+  },
+  isxdigit: {
+    parameters: '填一个 ASCII 字符。直接从 char 传参时，先转换为 unsigned char。',
+    requires: '参数必须是 EOF 或 unsigned char 可表示的值。',
+    returns: '是十六进制字符时返回非零，否则返回 0。样板把非零统一显示成 1。',
+    effects: '不改动输入。',
+    examples: 'F 或 9 返回 1，g 返回 0。',
+    warning: '判断真假用 result != 0，别假设库函数只返回 1。'
+  },
+  feof: {
+    parameters: '给临时文件填内容，再指定要读取的字节数。样板每个元素为 1 字节。',
+    requires: '先执行读取，再对同一个有效的流查询标志。',
+    returns: '读操作遇到文件末尾后返回非零；终止标志尚未置位时返回 0。',
+    effects: '只查状态，不移动文件位置。',
+    examples: '文件为 abc，要 5 字节，读到 3，EOF 标志为 1。改要 3 字节，读到 3，标志为 0。',
+    warning: '不要用 while (!feof(file)) 决定是否读取。先检查 fread 返回值，再判断原因。'
+  },
+  ferror: {
+    parameters: '给临时文件填内容，再指定要读取的字节数。',
+    requires: '传入有效的 FILE 指针。读取不足时同时查看 feof 和 ferror。',
+    returns: '错误标志置位时为非零，否则为 0。',
+    effects: '只查看错误标志。要清除错误标志可用 clearerr。',
+    examples: '文件为 abc，要 5 字节，得到 3，ferror 仍为 0。这个样板演示正常结束时的短读。',
+    warning: '短读也可能是正常到达文件末尾。真实 I/O 故障时，检查错误标志后再决定如何处理。'
+  },
+  perror: {
+    parameters: '填一个给人看的前缀，例如 open。前缀可留空。',
+    requires: '实际程序在调用失败后及时报告 errno。样板直接给 errno 设 EDOM，方便重复演示。',
+    returns: '无返回值，诊断写到 stderr。',
+    effects: '前缀非空时，打印前缀、冒号与空格，随后是错误说明和换行。',
+    examples: '前缀改成 open 后，错误行以 open: 开头。页面回放显示输出流；原生终端能看到系统正文。',
+    warning: '错误正文随系统和语言环境不同。测试可检查前缀和输出流。'
+  },
+  fmod: {
+    parameters: '第一行填被除数，第二行填非零除数。两个都是浮点数。',
+    requires: '样板接受有限数值，并在除数为零时停止。',
+    returns: '浮点余数。非零结果与被除数同号，绝对值小于除数的绝对值。',
+    effects: '不改动两个输入。',
+    examples: '-5.5 和 2 得到 -1.5；5.5 和 2 得到 1.5。',
+    warning: 'C 的 % 运算符用于整数。需要浮点余数时用 fmod。'
+  },
+  hypot: {
+    parameters: '填直角三角形两条直角边，或二维向量的两个分量。',
+    requires: '样板接受有限的十进制数，结果须可表示。',
+    returns: '返回斜边或向量的长度。',
+    effects: '内部以避免不必要的中间上溢或下溢为目标，直接平方后相加则可能过早溢出。',
+    examples: '3 和 4 得到 5；-6 和 8 得到 10。',
+    warning: '用容差判断非整数浮点结果。真实程序仍可能遇到结果超范围。'
+  },
+  strftime: {
+    parameters: '依次填年份、月份、日和缓冲区容量。样板使用固定格式 %Y-%m-%d。',
+    requires: '填真实日期，并给输出预留结尾空字符。struct tm 的年份从 1900 算，月份从 0 算。',
+    returns: '成功返回写入的字符数，不含空字符。空间不够时返回 0。',
+    effects: '成功时把格式化后的日期写入字符数组。',
+    examples: '2026、11、25 配容量 11，得到 2026-11-25 和 10。容量改成 10，返回 0。',
+    warning: '空间不足而返回 0 时，别继续打印缓冲区。'
+  }
+});
