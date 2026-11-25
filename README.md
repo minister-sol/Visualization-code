@@ -62,10 +62,11 @@ be4d63cfa1ccff55074c6b5ba959a6ba4ca26dc6f4c8e00c03e286ed1b36155a  CodeLens-Setup
 
 Free code signing provided by SignPath.io, certificate by SignPath Foundation（申请中，尚未生效）。
 
-- Committers and reviewers: zhongjing（本仓库唯一维护者，提交权限见 https://github.com/minister-sol ）
-- Approvers: zhongjing
-- 构建来源：安装包只在公开仓库源码上构建，签名只作用于本次构建产物，不对第三方二进制签名。
-- 当前状态：Windows 安装包尚未 Authenticode 签名；Linux 包的 SHA-256 清单由项目 GPG 密钥（指纹见上）分离签名。
+- Authors（可直接提交）：minister-sol（仓库所有者，https://github.com/minister-sol ）
+- Reviewers（审核外部提交）：minister-sol
+- Approvers（逐次批准签名请求）：minister-sol
+- 构建来源：安装包只在公开仓库源码上由 GitHub Actions 构建（workflow `Windows candidate`），签名只作用于本次构建产物，不对第三方二进制签名。
+- 当前状态：Windows 安装包尚未 Authenticode 签名；CI 已能产出可下载的未签名候选包，Linux 包的 SHA-256 清单由项目 GPG 密钥（指纹见上）分离签名。
 - 隐私政策：This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. 桌面版内嵌离线站点，无遥测、无自动更新回传。
 
 ## 第一次回放 · 跟着最大的数走一轮

@@ -69,3 +69,11 @@
 - macOS：现有 DMG 为 1.0.0，未随本轮重新构建（用户本轮明确“mac 版本先不管”）。
 - 默认分支 `codex/static-release-20261124` 与发布分支历史不相关（diff 379 文件），其 GitHub Pages 站点（https://minister-sol.github.io/Visualization-code/）仍是旧内容，未同步新站点；安装包内嵌站点已是最新，不受影响。如需页面同步，需另做迁移方案。
 
+
+## CI 未签名候选构建（2026-11-25 补）
+
+- workflow `Windows candidate`（`.github/workflows/windows-candidate.yml`）在 GitHub 托管 Windows runner 上完成站点构建、依赖安装、NSIS 打包、版本与签名状态记录、artifact 上传，全流程可复现。
+- run `45649715715` 全绿：`CodeLens-Setup-1.1.0-x64.exe`，fileVersion / productVersion 均为 1.1.0，`signature=NotSigned`，SHA-256 `80FE7A56…D71CD2`；artifact 名 `CodeLens-Windows-unsigned`，zip 121,467,034 字节。
+- 首次 run `45649420536` 失败原因是 Windows runner 控制台代码页 cp1252 无法输出构建脚本里的中文提示（`'charmap' codec can't encode`）。加 job 级 `PYTHONUTF8=1`、`PYTHONIOENCODING=utf-8` 后修复（提交 `65925e5`）。
+- 签名 job 已改为 SignPath 官方 `v3` action，并用 build job 的 artifact id 直接提交（提交 `f051f81`）；未配置 SignPath 变量时自动跳过，run `45650056079` 复跑验证通过。
+- CI 产物的 SHA-256 与 Release 上的 exe 不同（打包暂存顺序差异），两者不能互相比对；Release 资产仍以本地构建的 `be4d63cf…1b36155a` 为准。

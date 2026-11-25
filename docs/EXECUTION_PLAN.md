@@ -3255,3 +3255,9 @@ Codex 认领算法区 Java 源码交付、离线数据一致性与编译验证�
 - README 增加「用 GPG 校验下载」与「Code signing policy」两节（含 SignPath 要求的署名、团队角色、隐私声明）。
 - 未做：deb/rpm 包内嵌入签名（会改变字节与 SHA-256，需与清单、Release 资产同步重出）；Windows Authenticode 证书待申请。
 2026-11-25 豆包补：账号问题定位与凭据切换。API `403 suspended` 来自本机缓存凭据所属的旧账号 zhongjing0412（主页 404），仓库所有者 minister-sol 正常（主页 200、匿名下载正常，push 走协作者权限所以一直可用）。已写入 minister-sol 的细粒度 token（Contents / Workflows 读写，All repositories），`/user` 回读 `login=minister-sol`，`git credential fill` 用户名一致，push 成功。仓库 `user.email` 改为 `359524899+minister-sol@users.noreply.github.com`，新提交作者归属正确（历史提交不改）。Release 新增 `SHA256SUMS-1.1.0.txt.asc`（id 792036439，887 字节）并在说明中补 GPG 校验步骤；README 校验命令改为直接从 Release 取 `.asc`。
+### 2026-11-25 豆包补：GitHub Actions 未签名候选构建跑通与 SignPath v3 接线
+- workflow `.github/workflows/windows-candidate.yml` 在 windows-latest 上完成 build_static → npm ci → npm run dist → 记录版本/签名状态/SHA256 → 上传 artifact。首次 run 45649420536 失败在“Build the static site”：runner 的 cp1252 控制台无法输出脚本中文提示（`'charmap' codec can't encode`），并非站点构建本身出错。修复：job 级 `PYTHONUTF8=1`、`PYTHONIOENCODING=utf-8`（提交 65925e5）。
+- 修复后 run 45649715715 全绿：exe 版本 1.1.0，`signature=NotSigned`，sha256 `80FE7A56…D71CD2`；artifact `CodeLens-Windows-unsigned` 为 121,467,034 字节的 zip，签名 job 按门控跳过。
+- 依官方文档把签名 action 改为 `signpath/github-action-submit-signing-request@v3`，用 `needs.build.outputs.artifact_id` 把 build 上传的 artifact 直接交给 SignPath（提交 f051f81）；run 45650056079 复跑全绿，sign 仍按 `vars.SIGNPATH_PROJECT_SLUG` 门控跳过。签名 job 用 windows-latest，便于用 `Get-AuthenticodeSignature` 校验结果。
+- README 的 Code signing policy 角色改为 `minister-sol`（Authors / Reviewers / Approvers），并注明构建来源是公开仓库的 GitHub Actions；`docs/RELEASE_SIGNING.md` 增第 6、7 节，记录 CI 结果、失败根因与 SignPath 申请/接入的逐步操作。仓库本地 `user.name` 一并设为 `minister-sol`，与 noreply 邮箱配套。
+- 未做：SignPath 账号申请（需用户给 minister-sol 开 2FA 并提交申请表）、签名后替换 Release 资产并重签校验清单。默认分支 Pages 在 58f17b9 后有一次部署失败（GitHub 侧返回 500，构建步骤本身成功，非代码问题）。
