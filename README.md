@@ -48,13 +48,13 @@ be4d63cfa1ccff55074c6b5ba959a6ba4ca26dc6f4c8e00c03e286ed1b36155a  CodeLens-Setup
 
    应输出 `Good signature from "CodeLens Release (zhongjing)"`。
 
-3. 比对安装包：
+3. 比对安装包（先把三个包下载到同一目录）：
 
    ```sh
-   tr -d '\r' < SHA256SUMS-1.1.0.txt | sed -E 's#([0-9a-f]{64}).*/([^/]+)#\1  \2#' | sha256sum -c
+   tr -d '\r' < SHA256SUMS-1.1.0.txt | sed -E 's#^([0-9a-fA-F]{64})[[:space:]]+.*/([^/]+)$#\1  \2#' | sha256sum -c
    ```
 
-   Windows 可用 `Get-FileHash <文件> -Algorithm SHA256` 对照上面的表格。
+   三行都应输出 `OK`。Windows 可对单个文件执行 `Get-FileHash <文件> -Algorithm SHA256`，对照上面的表格。
 
 签名文件位于 [release/](release/)；签名内容就是 Release 上同名校验文件的原字节，因此 `gpg --verify` 在任何平台都能复现。
 
