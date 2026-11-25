@@ -4,6 +4,17 @@
 
 ![CodeLens 桌面实景：左侧选择冒泡排序并编辑输入，右侧控制播放速度和进度](docs/codelens-desktop.png)
 
+## 下载安装包（1.1.0）
+
+桌面版内嵌完整离线站点，包含 77 个算法主题（C99 / C++17 / Java 三种源码视图）与 66 项 C 标准库函数教学，断网可用。
+
+| 平台 | 安装包 | 系统要求 |
+|---|---|---|
+| Windows x64 | [CodeLens-Setup-1.1.0-x64.exe](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/CodeLens-Setup-1.1.0-x64.exe) | Windows 10 / 11 x64 |
+| Ubuntu amd64 | [codelens-desktop_1.1.0_amd64.deb](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/codelens-desktop_1.1.0_amd64.deb) | Ubuntu 22.04 及以上 |
+| CentOS x86_64 | [codelens-desktop-1.1.0-1.x86_64.rpm](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/codelens-desktop-1.1.0-1.x86_64.rpm) | CentOS Stream 9 x86_64 |
+
+SHA-256 校验值见 [Release 1.1.0](https://github.com/minister-sol/Visualization-code/releases/tag/v1.1.0) 的 `SHA256SUMS-1.1.0.txt`。安装包暂未代码签名，Windows 首次运行可能提示“未知发布者”。
 ## 第一次回放 · 跟着最大的数走一轮
 
 1. 在仓库根目录运行下面的命令，再打开 [本地 CodeLens](http://127.0.0.1:8000/)。
