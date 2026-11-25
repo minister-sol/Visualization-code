@@ -15,6 +15,17 @@
 | CentOS x86_64 | [codelens-desktop-1.1.0-1.x86_64.rpm](https://github.com/minister-sol/Visualization-code/releases/download/v1.1.0/codelens-desktop-1.1.0-1.x86_64.rpm) | CentOS Stream 9 x86_64 |
 
 SHA-256 校验值见 [Release 1.1.0](https://github.com/minister-sol/Visualization-code/releases/tag/v1.1.0) 的 `SHA256SUMS-1.1.0.txt`。安装包暂未代码签名，Windows 首次运行可能提示“未知发布者”。
+
+## Code signing policy
+
+Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+
+- Authors：minister-sol（仓库所有者，https://github.com/minister-sol ）
+- Reviewers：minister-sol
+- Approvers：minister-sol
+- 构建来源：Windows 安装包只由公开仓库的 GitHub Actions workflow `Windows candidate` 构建，签名只作用于该次构建产物。
+- 隐私政策：This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+
 ## 第一次回放 · 跟着最大的数走一轮
 
 1. 在仓库根目录运行下面的命令，再打开 [本地 CodeLens](http://127.0.0.1:8000/)。
