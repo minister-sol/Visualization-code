@@ -1,0 +1,94 @@
+name: Windows candidate
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build the static site into desktop/site
+        run: |
+          python scripts/build_static.py --output desktop/site
+          python scripts/build_static.py --verify desktop/site
+
+      - name: Install dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Build the NSIS installer (unsigned)
+        working-directory: desktop
+        run: npm run dist
+
+      - name: Record version, signature state and checksum
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem artifacts/desktop-release -Filter 'CodeLens-Setup-*.exe' | Select-Object -First 1
+          if (-not $exe) { throw 'installer not found' }
+          $version = (Get-Item $exe.FullName).VersionInfo
+          "file=$($exe.Name) bytes=$($exe.Length) fileVersion=$($version.FileVersion) productVersion=$($version.ProductVersion)"
+          $sig = Get-AuthenticodeSignature -LiteralPath $exe.FullName
+          "signature=$($sig.Status) signer=$($sig.SignerCertificate.Subject)"
+          $hash = (Get-FileHash -LiteralPath $exe.FullName -Algorithm SHA256).Hash
+          "sha256=$hash"
+          "$hash  $($exe.Name)" | Set-Content -LiteralPath 'artifacts/desktop-release/SHA256.txt' -Encoding utf8NoBOM
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CodeLens-Windows-unsigned
+          path: |
+            artifacts/desktop-release/CodeLens-Setup-*.exe
+            artifacts/desktop-release/SHA256.txt
+
+  # Requires SignPath Foundation approval and four repository values:
+  #   vars.SIGNPATH_ORGANIZATION_ID, vars.SIGNPATH_PROJECT_SLUG,
+  #   vars.SIGNPATH_SIGNING_POLICY_SLUG, vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG
+  #   secrets.SIGNPATH_API_TOKEN
+  # Skipped automatically while SIGNPATH_PROJECT_SLUG is unset.
+  sign:
+    needs: build
+    if: ${{ vars.SIGNPATH_PROJECT_SLUG != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: CodeLens-Windows-unsigned
+          path: unsigned
+
+      - name: Submit the installer to SignPath
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+
+      - name: Verify the signed installer
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem signed -Filter '*.exe' -Recurse | Select-Object -First 1
+          if (-not $exe) { throw 'signed installer not found' }
+          $sig = Get-AuthenticodeSignature -LiteralPath $exe.FullName
+          "signature=$($sig.Status) signer=$($sig.SignerCertificate.Subject)"
+          if ($sig.Status -ne 'Valid') { throw "signature is $($sig.Status)" }
+          (Get-FileHash -LiteralPath $exe.FullName -Algorithm SHA256).Hash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CodeLens-Windows-signed
+          path: signed/**/*.exe
