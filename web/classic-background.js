@@ -7,7 +7,7 @@
 
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const tau = 2 * Math.PI;
-  const interactiveContent = 'header, footer, .setup, .workspace-switch, .panel, .playback, #fsOverlay, a, button, input, select, textarea, label';
+  const interactiveContent = 'header, footer, .setup, .workspace-switch > span, .panel, .playback, #fsOverlay, a, button, input, select, textarea, label';
   const palettes = {
     nebula: {
       light: { base: '#EEF3F9', clouds: ['207,226,247', '221,215,244'], stars: ['35,100,195', '72,76,192', '110,65,177', '38,119,164'], accent: '37,99,235' },
@@ -231,7 +231,7 @@
 
   document.addEventListener('mousedown', event => {
     if (event.button === 0 && event.detail > 1 &&
-        event.target.matches('html, body, main, .hero, .panels')) {
+        event.target.matches('html, body, main, .hero, .panels, .workspace-switch')) {
       event.preventDefault();
     }
   });
