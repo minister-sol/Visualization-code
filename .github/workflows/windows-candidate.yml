@@ -17,6 +17,11 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      # The static builder prints Chinese status lines; without UTF-8 the
+      # runner's cp1252 console fails with "charmap codec can't encode".
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: 'utf-8'
     steps:
       - uses: actions/checkout@v4
 
