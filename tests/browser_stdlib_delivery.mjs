@@ -130,8 +130,8 @@ try {
     await call('Emulation.setDeviceMetricsOverride', {width,height,deviceScaleFactor:1,mobile:false});
     const layout = await evaluate(async width => {
       await new Promise(requestAnimationFrame);
-      const algorithmControl = document.querySelector(width <= 700 ? '.topic-trigger' : '#topic');
-      const libraryControl = document.querySelector('#libraryTopic');
+      const algorithmControl = document.querySelector('.topic-trigger');
+      const libraryControl = document.querySelector('#libraryTopicTrigger');
       const selects = [algorithmControl, libraryControl].map(node => node.getBoundingClientRect());
       const state = document.getElementById('state');
       return {
@@ -150,7 +150,25 @@ try {
     await fs.writeFile(path.join(evidence, 'guide-' + width + '.png'), Buffer.from(guideShot.data, 'base64'));
   }
   await evaluate(() => {
-    const trigger = document.querySelector('.topic-trigger');
+    const libraryTrigger = document.getElementById('libraryTopicTrigger');
+    const picker = document.getElementById('libraryTopic');
+    const search = document.getElementById('topicSearch');
+    search.value = 'snprintf';
+    search.dispatchEvent(new Event('input'));
+    libraryTrigger.click();
+    const libraryDialog = document.querySelector('.topic-dialog[open]');
+    const matches = [...libraryDialog.querySelectorAll('div button')];
+    const options = [...picker.options].filter(option => option.value);
+    const index = options.findIndex(option => option.value === 'snprintf');
+    if (index < 0 || matches.length >= 66 || matches.length !== options.length ||
+        matches.some((item, i) => item.textContent !== options[i].textContent))
+      throw Error('filtered library picker');
+    matches[index].click();
+    if (picker.value !== 'snprintf' || libraryDialog.open || !libraryTrigger.textContent.includes('snprintf'))
+      throw Error('library topic change');
+    search.value = '';
+    search.dispatchEvent(new Event('input'));
+    const trigger = document.querySelector('#topicTrigger');
     trigger.click();
     const dialog = document.querySelector('.topic-dialog');
     const bubble = [...dialog.querySelectorAll('button')].find(item => item.textContent === '冒泡排序');
@@ -158,6 +176,7 @@ try {
     bubble.click();
     if (document.getElementById('topic').value !== 'bubble' || document.getElementById('libraryTopic').value)
       throw Error('mobile algorithm change');
+    return true;
   });
   console.log('66 library guides and syntax, 77 algorithms, playback, seek, rerun, fullscreen, and both layouts passed');
 } finally {

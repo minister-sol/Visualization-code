@@ -89,7 +89,35 @@
     return {a,target:number(rest[0].split(/\s+/)[1])};
   }
   function linear(input){const {a,target}=searchInput(input),events=[];let result=null;const emit=emitter(a,events,()=>({target,result}));emit(null,`查找 ${target}。`);for(let i=0;i<a.length;i++){emit(2,`比较索引 ${i} 的 ${a[i]} 与 ${target}。`,[i]);if(a[i]===target){result=i;emit(2,`找到首个匹配索引 ${i}。`,[i]);return events;}}result=-1;emit(4,'未找到。');return events;}
-  function binary(input){const {a,target}=searchInput(input);if(a.some((x,i)=>i&&x<a[i-1]))throw Error('二分查找要求数组升序。');const events=[];let left=0,right=a.length,result=null;const emit=emitter(a,events,()=>({target,left,right,result}));emit(1,'初始化左闭右开区间。');while(left<right){const mid=Math.floor((left+right)/2);emit(3,`区间 [${left}, ${right})，中点 ${mid}。`,[mid]);if(a[mid]<target){left=mid+1;emit(4,'中点值较小，收缩左边界。',[mid]);}else{right=mid;emit(5,'中点值不小于目标，收缩右边界。',[mid]);}}result=left<a.length&&a[left]===target?left:-1;emit(7,result<0?'未找到。':`找到首个匹配索引 ${result}。`,result<0?[]:[result]);return events;}
+  function binary(input) {
+    const {a, target} = searchInput(input);
+    if (a.some((value, index) => index > 0 && value < a[index - 1])) {
+      throw Error('二分查找要求数组升序。');
+    }
+
+    const events = [];
+    const lines = {initialize: 1, compare: 3, advance: 4, narrow: 5, finish: 7};
+    let left = 0;
+    let right = a.length;
+    let result = null;
+    const emit = emitter(a, events, () => ({target, left, right, result}));
+
+    emit(lines.initialize, '初始化左闭右开区间。');
+    while (left < right) {
+      const mid = left + Math.floor((right - left) / 2);
+      emit(lines.compare, `区间 [${left}, ${right})，中点 ${mid}。`, [mid]);
+      if (a[mid] < target) {
+        left = mid + 1;
+        emit(lines.advance, '中点值较小，收缩左边界。', [mid]);
+      } else {
+        right = mid;
+        emit(lines.narrow, '中点值不小于目标，收缩右边界。', [mid]);
+      }
+    }
+    result = a[left] === target ? left : -1;
+    emit(lines.finish, result < 0 ? '未找到。' : `找到首个匹配索引 ${result}。`, result < 0 ? [] : [result]);
+    return events;
+  }
   function merge(input){const a=values(input),events=[];let segment=null,temp=[];const emit=emitter(a,events,()=>({segment:segment&&segment.slice(),temp:temp.slice()}));emit(null,'开始归并排序。');function sort(lo,hi){segment=[lo,hi];emit(2,`处理区间 [${lo}, ${hi})。`);if(hi-lo<=1)return;const mid=Math.floor((lo+hi)/2);sort(lo,mid);sort(mid,hi);segment=[lo,hi];temp=[];let i=lo,j=mid;emit(5,`合并 [${lo}, ${mid}) 与 [${mid}, ${hi})。`);while(i<mid&&j<hi){if(a[i]<=a[j]){temp.push(a[i++]);emit(7,`取左侧值，暂存 [${temp.join(', ')}]。`,[i-1]);}else{temp.push(a[j++]);emit(8,`取右侧值，暂存 [${temp.join(', ')}]。`,[j-1]);}}while(i<mid){temp.push(a[i++]);emit(10,'复制左侧剩余值。',[i-1]);}while(j<hi){temp.push(a[j++]);emit(11,'复制右侧剩余值。',[j-1]);}for(let k=0;k<temp.length;k++){a[lo+k]=temp[k];emit(12,`写回索引 ${lo+k}。`,[lo+k]);}}sort(0,a.length);segment=null;temp=[];emit(15,'排序完成。');return events;}
   function quick(input){const a=values(input),events=[];let range=null,pivot=null;const emit=emitter(a,events,()=>({range:range&&range.slice(),pivot}));emit(null,'开始快速排序。');function sort(lo,hi){range=lo<=hi?[lo,hi]:null;emit(2,lo>hi?'空区间，无需排序。':`处理区间 [${lo}, ${hi}]。`);if(lo>=hi)return;pivot=a[hi];let i=lo;emit(3,`选择末项 ${pivot} 为基准。`,[hi]);for(let j=lo;j<hi;j++){emit(5,`比较 ${a[j]} 与基准 ${pivot}。`,[j,hi]);if(a[j]<=pivot){[a[i],a[j]]=[a[j],a[i]];emit(6,i===j?`同一位置 ${i}，交换后状态不变。`:`交换索引 ${i} 与 ${j}。`,[i,j]);i++;emit(7,`边界移动到 ${i}。`);}}[a[i],a[hi]]=[a[hi],a[i]];emit(10,`基准归位到索引 ${i}。`,[i,hi]);sort(lo,i-1);sort(i+1,hi);}sort(0,a.length-1);range=null;pivot=null;emit(14,'排序完成。');return events;}
   function linked(input){

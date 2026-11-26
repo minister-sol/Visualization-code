@@ -266,53 +266,106 @@
   updateMotion();
 })();
 
-/* The mobile topic list uses the catalog already filtered by the search field. */
+/* The topic dialog uses the catalog already filtered by the search field. */
 (() => {
-  const select = document.getElementById('topic');
-  if (!select || !window.matchMedia) return;
-  const trigger = document.createElement('button');
   const dialog = document.createElement('dialog');
   if (!dialog.showModal) return;
-  trigger.type = 'button';
-  trigger.className = 'topic-trigger';
-  trigger.setAttribute('aria-haspopup', 'dialog');
   dialog.className = 'topic-dialog';
-  dialog.setAttribute('aria-label', '选择主题');
   const close = document.createElement('button');
+  close.type = 'button';
   close.textContent = '关闭';
   close.onclick = () => dialog.close();
   const list = document.createElement('div');
   dialog.append(close, list);
   document.body.append(dialog);
-  select.parentElement.after(trigger);
-  const sync = () => {
-    trigger.textContent = (select.selectedOptions[0]?.textContent || '选择主题') + ' ▾';
+
+  let anchor;
+  const place = () => {
+    if (!dialog.open) return;
+    const rect = anchor.getBoundingClientRect();
+    const {clientWidth, clientHeight} = document.documentElement;
+    const gutter = 8;
+    const gap = 6;
+    const width = Math.min(clientWidth - gutter * 2, Math.max(rect.width, 176));
+    const below = Math.max(0, clientHeight - rect.bottom - gap - gutter);
+    const above = Math.max(0, rect.top - gap - gutter);
+    const naturalHeight = dialog.offsetHeight + Math.max(0, list.scrollHeight - list.clientHeight);
+    const openAbove = naturalHeight > below && above > below;
+    dialog.style.width = width + 'px';
+    dialog.style.left = Math.max(gutter, Math.min(rect.left, clientWidth - width - gutter)) + 'px';
+    dialog.style.maxHeight = Math.min(openAbove ? above : below, clientHeight * 0.72) + 'px';
+    dialog.style.top = openAbove ? 'auto' : rect.bottom + gap + 'px';
+    dialog.style.bottom = openAbove ? clientHeight - rect.top + gap + 'px' : 'auto';
   };
-  sync();
-  select.addEventListener('change', sync);
-  trigger.onclick = () => {
-    list.replaceChildren();
-    for (const group of select.children) {
-      if (group.hidden) continue;
-      if (group.tagName === 'OPTGROUP') {
-        const title = document.createElement('h3');
-        title.textContent = group.label;
-        list.append(title);
+  window.addEventListener('resize', place);
+  window.addEventListener('scroll', place);
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right ||
+        event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+  });
+
+  for (const [id, label] of [['topic', '选择算法或数据结构'], ['libraryTopic', '选择标准库函数'],
+    ['codeLang', '选择代码语言'], ['fsLang', '选择全屏代码语言']]) {
+    const select = document.getElementById(id);
+    if (!select) continue;
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'topic-trigger';
+    trigger.id = id + 'Trigger';
+    trigger.setAttribute('aria-haspopup', 'dialog');
+    const inline = select.parentElement.classList.contains('language-picker');
+    if (inline) select.after(trigger);
+    else select.parentElement.after(trigger);
+    const sync = () => {
+      trigger.disabled = select.disabled;
+      const text = select.selectedOptions[0]?.textContent || label;
+      trigger.textContent = text + ' ▾';
+      if (inline) trigger.setAttribute('aria-label', label + ' · ' + text);
+    };
+    sync();
+    select.addEventListener('change', sync);
+    select.addEventListener('picker-sync', sync);
+    new MutationObserver(sync).observe(select, {childList:true, attributes:true, attributeFilter:['disabled']});
+
+    trigger.onclick = () => {
+      dialog.setAttribute('aria-label', label);
+      list.replaceChildren();
+      for (const group of select.children) {
+        if (group.hidden) continue;
+        if (group.tagName === 'OPTGROUP') {
+          const title = document.createElement('h3');
+          title.textContent = group.label;
+          list.append(title);
+        }
+        for (const option of group.tagName === 'OPTGROUP' ? group.children : [group]) {
+          if (option.hidden || !option.value) continue;
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.disabled = group.disabled || option.disabled;
+          item.textContent = option.textContent;
+          item.setAttribute('aria-pressed', String(option.selected));
+          item.onclick = () => {
+            select.value = option.value;
+            dialog.close();
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          };
+          list.append(item);
+        }
       }
-      for (const option of group.tagName === 'OPTGROUP' ? group.children : [group]) {
-        const item = document.createElement('button');
-        item.textContent = option.textContent;
-        item.setAttribute('aria-pressed', String(option.selected));
-        item.onclick = () => {
-          select.value = option.value;
-          dialog.close();
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-        };
-        list.append(item);
+      if (!list.querySelector('button')) {
+        const empty = document.createElement('p');
+        empty.textContent = '没有匹配的选项。';
+        list.append(empty);
       }
-    }
-    dialog.showModal();
-    list.querySelector('[aria-pressed="true"]')?.scrollIntoView({block:'center'});
-  };
-  select.classList.add('topic-enhanced');
+      anchor = trigger;
+      dialog.showModal();
+      place();
+      const selected = list.querySelector('[aria-pressed="true"]:not(:disabled)');
+      selected?.focus({preventScroll:true});
+      selected?.scrollIntoView({block:'center'});
+    };
+    select.classList.add('topic-enhanced');
+  }
 })();

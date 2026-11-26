@@ -3261,3 +3261,4 @@ Codex 认领算法区 Java 源码交付、离线数据一致性与编译验证�
 - 依官方文档把签名 action 改为 `signpath/github-action-submit-signing-request@v3`，用 `needs.build.outputs.artifact_id` 把 build 上传的 artifact 直接交给 SignPath（提交 f051f81）；run 45650056079 复跑全绿，sign 仍按 `vars.SIGNPATH_PROJECT_SLUG` 门控跳过。签名 job 用 windows-latest，便于用 `Get-AuthenticodeSignature` 校验结果。
 - README 的 Code signing policy 角色改为 `minister-sol`（Authors / Reviewers / Approvers），并注明构建来源是公开仓库的 GitHub Actions；`docs/RELEASE_SIGNING.md` 增第 6、7 节，记录 CI 结果、失败根因与 SignPath 申请/接入的逐步操作。仓库本地 `user.name` 一并设为 `minister-sol`，与 noreply 邮箱配套。
 - 未做：SignPath 账号申请（需用户给 minister-sol 开 2FA 并提交申请表）、签名后替换 Release 资产并重签校验清单。默认分支 Pages 在 58f17b9 后有一次部署失败（GitHub 侧返回 500，构建步骤本身成功，非代码问题）。
+2026-11-26 Codex 整合标准库和玻璃界面分支；保留标准库分支的 Windows 工作流冲突版本。静态资源由入口解析，重构二分查找保持回放一致。66 个 C99 样板和 132 组输出、Edge 66+77 页面回归、69 文件静态构建通过。原工作区删除 40 个未跟踪的可重编译 EXE。
